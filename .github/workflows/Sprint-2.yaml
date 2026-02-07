@@ -50,6 +50,7 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
 
         run: |
+          pwd
           cd tests/
           ls -la
           python -m pytest tests/ -v --tb=long
