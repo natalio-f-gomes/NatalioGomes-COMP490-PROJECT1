@@ -41,7 +41,7 @@ jobs:
         env:
           PYTHONPATH: sprint_1
         run: |
-          pylint Sprint-1 \
+          pylint sprint_1 \
             --init-hook="import pylint_venv; pylint_venv.inithook()" \
             --max-line-length=120
             
