@@ -35,7 +35,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install portaudio19-dev
-      
 
       - name: Lint with pylint
         env:
@@ -51,7 +50,6 @@ jobs:
           PYTHONPATH: sprint_1
         run: git clone https://github.com/alphacep/vosk-api
 
-
       - name: Run Unit Tests
         env:
           PYTHONPATH: ${{ github.workspace }}/Sprint-1
@@ -59,4 +57,3 @@ jobs:
           cd sprint_1
           ls -la
           python -m pytest -v --tb=long
-          

@@ -30,8 +30,8 @@
 3. Create and activate a virtual environment
 
    ```bash
-   python -m venv DevEnv
-   source DevEnv/bin/activate   # On Windows: DevEnv\Scripts\activate
+   python -m venv .venv
+   source .venv/bin/activate   # On Windows: DevEnv\Scripts\activate
    ```
 
 4. Clone the Vosk API repository (needed for model files)
@@ -43,17 +43,25 @@
 5. Install Python dependencies
 
    ```bash
-   pip install -r requirements.txt
+   pip3 install -r requirements.txt #macOS
+   pip install -r requirements.txt  #Windows
    ```
 
 ## Running the Application
+1. cd sprint_1
+```bash
+python3 app.py # macOS
+python app.py  # windows
+```
+2. Run the main script
+3. Speak clearly into your microphone
+4. Say the exit command to exit
 
-1. Open the project in **PyCharm** (or your preferred IDE)
-2. Set the interpreter to the virtual environment (`DevEnv`)
-3. Run the main script
-4. Speak clearly into your microphone
-5. Say the exit command to exit
+## Running Tests
 
+```bash
+python -m pytest
+```
 The application uses **Vosk API** to perform offline speech-to-text transcription.
 
 ## Running Tests
@@ -61,7 +69,6 @@ The application uses **Vosk API** to perform offline speech-to-text transcriptio
 ```bash
 pytest tests/
 ```
-
 
 I found this article quite interesting: 
 https://jatinchowdhury18.medium.com/some-thoughts-on-audio-data-types-2124d0a2defa
