@@ -62,7 +62,7 @@ jobs:
           python -m pytest tests/ -v --tb=long
           
   Sprint-2:
-    needs: Spring-1
+    needs: Sprint-1
     runs-on: ubuntu-latest
 
     steps:
