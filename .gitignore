@@ -1,0 +1,8 @@
+.idea
+DevEnv
+.pytest_cache
+Recording
+sprint-1/vosk-api/
+todo
+.env
+dummy_script.txt

@@ -1,0 +1,2 @@
+[MAIN]
+init-hook=import pylint_venv; pylint_venv.inithook()

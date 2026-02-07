@@ -1,0 +1,6 @@
+Audio/
+vosk-api/
+Recording/
+.pytest_cache/
+.pytest_cache/
+todo
