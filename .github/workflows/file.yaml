@@ -76,7 +76,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        working-directory: Sprint-2
+        working-directory: sprint_2
         run: |
           sudo apt-get update
           python --version
@@ -90,7 +90,8 @@ jobs:
         env:
           PYTHONPATH: sprint_2
         run: |
-          pylint Sprint-2 \
+          pylint sprint_2 \
+          pylint sprint_2 \
             --init-hook="import pylint_venv; pylint_venv.inithook()" \
             --max-line-length=120
 
