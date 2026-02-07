@@ -50,6 +50,6 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
 
         run: |
-          cd sprint_2
+          cd sprint_2/tests
           ls -la
           python -m pytest tests/ -v --tb=long
