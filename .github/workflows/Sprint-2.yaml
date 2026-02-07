@@ -43,13 +43,13 @@ jobs:
 
       - name: Run Unit Tests
         env:
-          PYTHONPATH: ${{ github.workspace }}/sprint_2
+          PYTHONPATH: ${{ github.workspace }}/tests/
           SERVER_ADDRESS: ${{ secrets.SERVER_ADDRESS }}
           SERVER_PORT: ${{ secrets.SERVER_PORT }}
           EMAIL: ${{ secrets.EMAIL }}
           PASSWORD: ${{ secrets.PASSWORD }}
 
         run: |
-          cd tests/
+          pwd
           ls -la
           python -m pytest tests/ -v --tb=long
