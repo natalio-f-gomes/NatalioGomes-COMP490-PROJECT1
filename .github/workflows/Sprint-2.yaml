@@ -40,6 +40,10 @@ jobs:
           pylint sprint_2 \
             --init-hook="import pylint_venv; pylint_venv.inithook()" \
             --max-line-length=120
+      - name: Debug env vars
+        run: |
+          echo "SERVER_ADDRESS is set: ${{ secrets.SERVER_ADDRESS != '' }}"
+          echo "SERVER_PORT is set: ${{ secrets.SERVER_PORT != '' }}"
 
       - name: Run Unit Tests
         env:

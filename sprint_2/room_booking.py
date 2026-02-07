@@ -23,7 +23,7 @@ class RoomBooking:
         Initiate by loading the necessary data and set the constant API,
         followed by declaring the tokens that will later be used
         """
-        load_dotenv()
+        load_dotenv(override=False)
         self.email = os.getenv("EMAIL")
         self.password = os.getenv("PASSWORD")
         server_address = os.getenv("SERVER_ADDRESS")
