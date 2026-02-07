@@ -31,7 +31,7 @@
 
    ```bash
    python -m venv .venv
-   source .venv/bin/activate   # On Windows: DevEnv\Scripts\activate
+   source .venv/bin/activate   # On Windows: .venv\Scripts\activate
    ```
 
 
@@ -41,14 +41,14 @@
    pip install -r requirements.txt
    ```
 
-## Running the Application
+6. Running the Application
 
 ```bash
 python3 main.py # macOS
 python main.py  # windows
 ```
 
-## Running Tests
+7. Running Tests
 
 ```bash
 python -m pytest

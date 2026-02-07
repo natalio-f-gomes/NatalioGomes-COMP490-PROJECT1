@@ -31,7 +31,7 @@
 
    ```bash
    python -m venv .venv
-   source .venv/bin/activate   # On Windows: DevEnv\Scripts\activate
+   source .venv/bin/activate   # On Windows: .venv\Scripts\activate
    ```
 
 4. Clone the Vosk API repository (needed for model files)
