@@ -45,8 +45,6 @@ jobs:
             --init-hook="import pylint_venv; pylint_venv.inithook()" \
             --max-line-length=120 \
             --disable=W0613
-            
-
 
       - name: Clone Vosk-API
         env:
@@ -90,7 +88,6 @@ jobs:
         env:
           PYTHONPATH: sprint_2
         run: |
-          pylint sprint_2 \
           pylint sprint_2 \
             --init-hook="import pylint_venv; pylint_venv.inithook()" \
             --max-line-length=120
