@@ -7,10 +7,9 @@ File: handle_request_decorator.py
 Purpose: This file contains the methods that handle decorators. It is supposed to eliminate as
         much repeatable code as possible when making a request.
 """
-
+from typing import Callable
 from functools import wraps
 import requests
-from pygments.lexers import func
 
 
 def get_exceptions() -> dict:
@@ -38,7 +37,7 @@ def get_exceptions() -> dict:
     }
 
 
-def handle_http_error(function_name: func, status_code: int, reason: str, message: str):
+def handle_http_error(function_name: Callable, status_code: int, reason: str, message: str):
     """
     Handle http error separately
     :param function_name:
@@ -54,7 +53,7 @@ def handle_http_error(function_name: func, status_code: int, reason: str, messag
     raise SystemExit(1)
 
 
-def handle_exception(function_name: func, exception: Exception, message: str = None) -> None:
+def handle_exception(function_name: Callable, exception: Exception, message: str = None) -> None:
     """
     Prints the function name, exception and message
     :param function_name:
@@ -68,11 +67,11 @@ def handle_exception(function_name: func, exception: Exception, message: str = N
         raise SystemExit(1)
 
 
-def handle_request_exceptions(function: func):
+def handle_request_exceptions(function: Callable):
     """
     Gets a function and then wraps it with a function that handles exceptions
     :param function:
-    :return: func
+    :return: Callable
     """
 
     @wraps(function)

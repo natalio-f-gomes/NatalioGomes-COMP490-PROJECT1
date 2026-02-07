@@ -15,7 +15,6 @@ from random import randrange
 from room_booking import RoomBooking
 
 
-
 class DisplayDataInTerminal:
     """
     DisplayDataInTerminal class
