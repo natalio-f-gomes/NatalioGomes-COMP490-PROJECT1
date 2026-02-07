@@ -51,6 +51,6 @@ jobs:
 
         run: |
           pwd
-          cd tests/
+          cd sprint_2/tests/
           ls -la
           python -m pytest tests/ -v --tb=long
