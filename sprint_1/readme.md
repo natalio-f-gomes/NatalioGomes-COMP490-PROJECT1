@@ -1,9 +1,7 @@
 # Author: Natalio Gomes
 #### Class: COMP 490
 #### Section: 003
-
 ## Project 1 – Sprint 1
-
 ### Prerequisites
 
 - Git

@@ -18,6 +18,7 @@ class RoomBooking:
     """
     RoomBooking class which contains all methods necessary for Spring 2
     """
+
     def __init__(self):
         """
         Initiate by loading the necessary data and set the constant API,
@@ -49,7 +50,6 @@ class RoomBooking:
         self.authentication_status_code = response.status_code
         self.refresh_token = response.json()['token']['refresh']
         self.access_token = response.json()['token']['access']
-
 
     @handle_request_exceptions
     def get_available_meeting_rooms(self) -> json:

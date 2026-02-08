@@ -12,7 +12,7 @@ from functools import wraps
 import requests
 
 
-def get_exceptions() -> dict:
+def get_request_exceptions() -> dict:
     """
     :return: a dictionary of exceptions and messages associated with it
     """
@@ -44,7 +44,7 @@ def handle_http_error(function_name: Callable, status_code: int, reason: str, me
     :param status_code:
     :param reason:
     :param message:
-    :return:
+    :return:None
     """
     print(f"There was an Exception in the method [{function_name}()]"
           f"\nMessage: {message}"
@@ -75,14 +75,14 @@ def handle_request_exceptions(function: Callable):
     """
 
     @wraps(function)
-    def handle_function(*args, **kwargs):
+    def handle_function(*args, **kwargs) -> Callable or None:
         """
         Wrapper function that takes arguments and keyword arguments in a dictionary format
         Handles all errors as the same except HTTP error
             because I need the status code and the reason
         :param args:
         :param kwargs:
-        :return: None
+        :return: Callable or None
         """
         try:
             return function(*args, **kwargs)
@@ -91,7 +91,7 @@ def handle_request_exceptions(function: Callable):
                               e.response.reason, "HTTP error")
             return None
         except requests.exceptions.RequestException as e:
-            message = get_exceptions().get(type(e), type(e).__name__)
+            message = get_request_exceptions().get(type(e), type(e).__name__)
             handle_exception(function.__name__, e, message)
             return None
     return handle_function
