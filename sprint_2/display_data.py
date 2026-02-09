@@ -32,7 +32,8 @@ class DisplayDataInTerminal:
         for _ in self.instance.get_available_meeting_rooms():
             self.total_available_rooms += 1
 
-    def display_individual_room_information(self, room: json):
+    @staticmethod
+    def display_individual_room_information(room: json):
         """
         Receives the room dictionary and then print the information in each lne
         :param room: json
@@ -42,7 +43,8 @@ class DisplayDataInTerminal:
         print(f"Room Name: {room['room_name']}")
         print(f"Room Capacity: {room['capacity']}")
 
-    def is_leap_year(self, year: int):
+    @staticmethod
+    def is_leap_year(year: int):
         """
         Calculates leap year
         :param year:
@@ -110,13 +112,7 @@ class DisplayDataInTerminal:
         book_meeting_room = self.instance.book_a_meeting_room(random_room_id, start_time, end_time)
         print("Booking a meeting room...")
         self.display_individual_room_information(random_room)
-        try:
-            if book_meeting_room["error"]:
-                print(f"Error trying to book a room.\nResponse: {book_meeting_room['error']}")
-            if book_meeting_room["message"]:
-                print(f"Successful attempt.\nResponse: {book_meeting_room['message']}")
-        except KeyError:
-            pass
+        print(book_meeting_room)
 
     def display_all_my_booking(self):
         """

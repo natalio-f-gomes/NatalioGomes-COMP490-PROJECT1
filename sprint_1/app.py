@@ -6,7 +6,7 @@ File: app.py
 Purpose: Puts everything together
 """
 
-from real_time_transcription import  RealTimeTranscription
+from real_time_transcription import RealTimeTranscription
 
 if __name__ == "__main__":
     transcriber = RealTimeTranscription()

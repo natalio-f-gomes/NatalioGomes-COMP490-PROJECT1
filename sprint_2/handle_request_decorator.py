@@ -63,8 +63,7 @@ def handle_exception(function_name: Callable, exception: Exception, message: str
     """
     print(f"There was an Exception in the method [{function_name}()]"
           f"\nMessage: {message} - \nException: {exception}")
-    if message != "InvalidJSONError":
-        raise SystemExit(1)
+    raise SystemExit(1)
 
 
 def handle_request_exceptions(function: Callable):
