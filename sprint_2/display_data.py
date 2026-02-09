@@ -113,7 +113,7 @@ class DisplayDataInTerminal:
         try:
             if book_meeting_room["error"]:
                 print(f"Error trying to book a room.\nResponse: {book_meeting_room['error']}")
-            if book_meeting_room['message']:
+            if book_meeting_room["message"]:
                 print(f"Successful attempt.\nResponse: {book_meeting_room['message']}")
         except KeyError:
             pass
