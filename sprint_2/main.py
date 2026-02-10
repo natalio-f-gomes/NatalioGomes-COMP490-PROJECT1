@@ -17,6 +17,7 @@ def main():
     :return: None
     """
     instance = DisplayDataInTerminal()
+    instance.display_all_my_booking()
     instance.book_n_meeting_rooms(2)
     instance.display_available_rooms()
     instance.display_all_my_booking()

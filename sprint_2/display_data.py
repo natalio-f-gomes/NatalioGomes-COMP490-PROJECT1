@@ -62,7 +62,7 @@ class DisplayDataInTerminal:
         Does string formatting and at the end, returns start time and end time
         :return: None
         """
-        rand_year = randrange(datetime.now().year, datetime.now().year + 10)
+        rand_year = randrange(datetime.now().year + 1, datetime.now().year + 10)
         rand_month = randrange(1, 12)
         if self.is_leap_year(rand_year) and rand_month == 2:
             rand_day = randrange(1, 28)
@@ -112,7 +112,7 @@ class DisplayDataInTerminal:
         book_meeting_room = self.instance.book_a_meeting_room(random_room_id, start_time, end_time)
         print("Booking a meeting room...")
         self.display_individual_room_information(random_room)
-        print(book_meeting_room)
+        print(f"Book a Meeting Room Response: {book_meeting_room}")
 
     def display_all_my_booking(self):
         """
@@ -131,19 +131,13 @@ class DisplayDataInTerminal:
         :return: None
         """
         for booking_id in self.all_my_booking_ids:
-            try:
-                cancel_booking_response = self.instance.cancel_meeting_room(booking_id)
-                if cancel_booking_response["success"]:
-                    print(f"Successfully Canceled the booking with id: {booking_id}")
-                else:
-                    print(f"{cancel_booking_response}")
-            except KeyError as e:
-                print(e)
+            cancel_booking_response = self.instance.cancel_meeting_room(booking_id)
+            print(f"Attempt to cancel booking with id {booking_id}. Response: {cancel_booking_response}")
         print("All of your bookings has been successfully canceled")
 
     def cancel_a_random_booking(self):
         """
-        For test purposes, thi method exists for canceling a random booking room
+        For test purposes, this method exists for canceling a random booking room
         :return: None
         """
         print(f"{'=' * 62} Cancel a Random Booking {'=' * 62}")
