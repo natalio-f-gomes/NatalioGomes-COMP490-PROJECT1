@@ -4,8 +4,6 @@ Class: COMP 490
 Section: 003
 File: real_time_transcription.py
 Purpose: Contains the logic of getting audio and getting transcript while he user is speaking
-TODO: Write unit tests for recording method
-    Make Sure to change the test do it gest the correct folder(without the ":")
 """
 
 import json
@@ -36,15 +34,6 @@ class RealTimeTranscription:
         self.recognizer.SetWords(True)
         self.recognizer.SetPartialWords(False)
         self.exit_command = "exit the program"
-        self.exit_program = False
-        self.audio_stream = sounddevice.InputStream(
-            samplerate=get_sample_rate(),
-            channels=get_channel(),
-            dtype=get_d_type(),
-            callback=self.put_audio_in_the_queue,
-            blocksize=1024,
-        )
-        self.all_transcriptions = []
 
     def put_audio_in_the_queue(
             self,
@@ -62,8 +51,7 @@ class RealTimeTranscription:
             print(f"Status: {status}")
         self.audio_queue.put(input_data.copy())
 
-    @staticmethod
-    def get_audio_location(recording: numpy.ndarray,
+    def get_audio_location(self, recording: numpy.ndarray,
                            current_time: datetime = datetime.now()) -> str or None:
         """
         :param current_time:
@@ -74,8 +62,6 @@ class RealTimeTranscription:
         if recording is None:
             print("Cannot save: recording data is NONE")
             return None
-        current_time = (str(current_time).replace(":", "_")
-                        .replace(".", "_").replace("-", "_"))
         os.makedirs(f"recording/{current_time}", exist_ok=True)
         audio_location = f"recording/{current_time}/audio.wav"
         write(audio_location, get_sample_rate(), recording)
@@ -99,24 +85,6 @@ class RealTimeTranscription:
         print("No Audio Was Recorded")
         return None
 
-    def stop_the_program(self, audio_blocks):
-        """
-        Responsible for putting audio and transcription together
-            and stop the audio_stream
-        :return: None
-        """
-        self.audio_stream.stop()
-        self.audio_stream.close()
-
-        # Grab any remaining text the recognizer hasn't finalized
-        final = json.loads(self.recognizer.FinalResult())
-        final_text = final.get("text", "")
-
-        if final_text or self.exit_program:
-            print(f"Transcript:   {final_text}")
-            self.all_transcriptions.append(final_text)
-            self.put_recording_blocks_together(audio_blocks)
-
     def record(self) -> str:
         """
         Opens an audio stream, reads blocks from the queue,
@@ -124,41 +92,70 @@ class RealTimeTranscription:
         Finally, it prints the transcription
         Unfortunately, I am not sure how to test this method yet
         """
+        audio_stream = sounddevice.InputStream(
+            samplerate=get_sample_rate(),
+            channels=get_channel(),
+            dtype=get_d_type(),
+            callback=self.put_audio_in_the_queue,
+            blocksize=1024,
+        )
+
+        all_transcriptions = []
         audio_blocks = []
+        exit_program = False
+
         try:
             print(f"... RECORDING ...\n"
                   f"(SAY THE COMMAND: '{self.exit_command}' to STOP)\n")
-            self.audio_stream.start()
-            while self.exit_program is not True:
+            audio_stream.start()
+            while exit_program is not True:
                 try:
                     # Get the next audio block from the queue. Wait for the data to arrive for 0.2 seconds
                     data = self.audio_queue.get(timeout=0.2)
                     audio_blocks.append(data)
                     audio_bytes = data.tobytes()
+
                     if self.recognizer.AcceptWaveform(audio_bytes):
                         result = json.loads(self.recognizer.Result())
                         text = result.get("text", "")
                         if self.exit_command in text:
-                            self.exit_program = True
+                            exit_program = True
+
                         if text:
                             print(f"Transcript:   {text}")
-                            self.all_transcriptions.append(text)
+                            all_transcriptions.append(text)
+
                     else:
                         partial = json.loads(self.recognizer.PartialResult())
                         partial_text = partial.get("partial", "")
                         if self.exit_command in partial_text:
-                            self.exit_program = True
+                            exit_program = True
+
                         if partial_text:
                             print(f"Transcript: {partial_text}", end="\r")
+
                 except queue.Empty:
                     # No audio in queue, just continue waiting
                     pass
 
         except KeyboardInterrupt:
             print("\n\nStopping...")
-            self.stop_the_program(audio_blocks)
+
         finally:
-            self.stop_the_program(audio_blocks)
-        full_transcription = " ".join(self.all_transcriptions)
+            audio_stream.stop()
+            audio_stream.close()
+
+            # Grab any remaining text the recognizer hasn't finalized
+            final = json.loads(self.recognizer.FinalResult())
+            final_text = final.get("text", "")
+
+            if final_text:
+                print(f"Transcript:   {final_text}")
+                all_transcriptions.append(final_text)
+
+            if exit_program:
+                self.put_recording_blocks_together(audio_blocks)
+
+        full_transcription = " ".join(all_transcriptions)
         full_transcription = full_transcription.replace(self.exit_command, " ")
         return full_transcription

@@ -39,7 +39,6 @@ class TestAudioTranscription:
         """
         transcription_path_1 = os.path.join(TEST_DIR, "test_recording", "2026_02_01_14_04_28_974366", "transcription"
                                                                                                       ".txt")
-
         with open(transcription_path_1, "r", encoding='utf-8') as file:
             content = file.read()
             assert content == "hello world"
