@@ -23,10 +23,10 @@ class TestAudioTranscription:
         tests if the transcripts actually match the words of the audio
         :return: None
         """
-        audio_1_path = os.path.join(TEST_DIR, "test_recording", "2026-02-01 14:04:28.974366", "audio.wav")
+        audio_1_path = os.path.join(TEST_DIR, "test_recording", "2026_02_01_14_04_28_974366", "audio.wav")
         transcription_1 = transcribe_audio(audio_1_path)
 
-        audio_2_path = os.path.join(TEST_DIR, "test_recording", "2026-02-01 14:09:04.124898", "audio.wav")
+        audio_2_path = os.path.join(TEST_DIR, "test_recording", "2026_02_01_14_09_04_124898", "audio.wav")
         transcription_2 = transcribe_audio(audio_2_path)
 
         assert transcription_1 == "hello world"
@@ -37,7 +37,7 @@ class TestAudioTranscription:
         tests if the content of the file match the correct output
         :return: None
         """
-        transcription_path_1 = os.path.join(TEST_DIR, "test_recording", "2026-02-01 14:04:28.974366", "transcription"
+        transcription_path_1 = os.path.join(TEST_DIR, "test_recording", "2026_02_01_14_04_28_974366", "transcription"
                                                                                                       ".txt")
 
         with open(transcription_path_1, "r", encoding='utf-8') as file:
