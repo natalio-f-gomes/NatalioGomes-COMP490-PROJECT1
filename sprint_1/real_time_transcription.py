@@ -45,7 +45,6 @@ class RealTimeTranscription:
             blocksize=1024,
         )
         self.all_transcriptions = []
-        self.audio_blocks = []
 
     def put_audio_in_the_queue(
             self,
@@ -100,7 +99,7 @@ class RealTimeTranscription:
         print("No Audio Was Recorded")
         return None
 
-    def stop_the_program(self):
+    def stop_the_program(self, audio_blocks):
         """
         Responsible for putting audio and transcription together
             and stop the audio_stream
@@ -116,7 +115,7 @@ class RealTimeTranscription:
         if final_text or self.exit_program:
             print(f"Transcript:   {final_text}")
             self.all_transcriptions.append(final_text)
-            self.put_recording_blocks_together(self.audio_blocks)
+            self.put_recording_blocks_together(audio_blocks)
 
     def record(self) -> str:
         """
@@ -125,6 +124,7 @@ class RealTimeTranscription:
         Finally, it prints the transcription
         Unfortunately, I am not sure how to test this method yet
         """
+        audio_blocks = []
         try:
             print(f"... RECORDING ...\n"
                   f"(SAY THE COMMAND: '{self.exit_command}' to STOP)\n")
@@ -133,7 +133,7 @@ class RealTimeTranscription:
                 try:
                     # Get the next audio block from the queue. Wait for the data to arrive for 0.2 seconds
                     data = self.audio_queue.get(timeout=0.2)
-                    self.audio_blocks.append(data)
+                    audio_blocks.append(data)
                     audio_bytes = data.tobytes()
                     if self.recognizer.AcceptWaveform(audio_bytes):
                         result = json.loads(self.recognizer.Result())
@@ -156,9 +156,9 @@ class RealTimeTranscription:
 
         except KeyboardInterrupt:
             print("\n\nStopping...")
-            self.stop_the_program()
+            self.stop_the_program(audio_blocks)
         finally:
-            self.stop_the_program()
+            self.stop_the_program(audio_blocks)
         full_transcription = " ".join(self.all_transcriptions)
         full_transcription = full_transcription.replace(self.exit_command, " ")
         return full_transcription
