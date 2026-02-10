@@ -1,6 +1,6 @@
 Audio/
 vosk-api/
-Recording/
+Recording/*
 .pytest_cache/
 .pytest_cache/
 todo

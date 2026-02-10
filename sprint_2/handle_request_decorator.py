@@ -55,10 +55,10 @@ def handle_http_error(function_name: Callable, status_code: int, reason: str, me
 
 def handle_exception(function_name: Callable, exception: Exception, message: str = None) -> None:
     """
-    Prints the function name, exception and message
-    :param function_name:
-    :param exception:
-    :param message:
+    Prints the function name, exception and the message
+    :param function_name:Callable
+    :param exception: Exception
+    :param message: str
     :return:
     """
     print(f"There was an Exception in the method [{function_name}()]"

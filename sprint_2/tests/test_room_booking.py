@@ -62,7 +62,7 @@ class TestRoomBooking:
         start_time, end_time = display_data_instance.generate_a_random_booking_time()
         response_msg_1 = room_booking_instance.book_a_meeting_room(random_id, start_time, end_time)
         response_msg_2 = room_booking_instance.book_a_meeting_room(random_id, start_time, end_time)
-        success_message = 'Meeting room booked successfully.'
+        success_message = "Meeting room booked successfully."
         failed_message = ("Meeting room is not available or does not have "
                           "sufficient capacity for the specified time range and number of persons.")
         if response_msg_1 is not None:
