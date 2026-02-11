@@ -47,7 +47,7 @@ class RoomBooking:
         }
         response = requests.post(f"{self.api}{endpoint}", json=user_credentials, timeout=5)
         self.authentication_status_code = response.status_code
-        #self.refresh_token = response.json()['token']['refresh']
+        # self.refresh_token = response.json()['token']['refresh']
         access_token = response.json()['token']['access']
         self.headers = {"Authorization": f"Bearer {access_token}"}
 
