@@ -143,7 +143,7 @@ class DisplayDataInTerminal:
                     reason = cancel_booking_response['error']
                 if cancel_booking_response['success']:
                     success += 1
-            except KeyError as ke:
+            except KeyError:
                 pass
         print(f"{errors} bookings could not be canceled because of:"
               f" '{reason}'"

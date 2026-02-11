@@ -98,7 +98,7 @@ class RoomBooking:
     def cancel_meeting_room(self, booking_id: int) -> json or None:
         """
         METHOD: POST
-        Objective: cancel a booking
+        Objective: cancel a booking based on the id
         :param booking_id:
         :return: json or None
         """
