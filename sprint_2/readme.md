@@ -48,6 +48,8 @@ python3 main.py # macOS
 python main.py  # windows
 ```
 
+Notes: The DisplayDataInTerminal located in the display_data.py exists to quickly CRUD the data
+
 7. Running Tests
 
 ```bash

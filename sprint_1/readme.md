@@ -15,7 +15,7 @@
 
    ```bash
    git clone git@github.com:natalio-f-gomes/COMP490-Project1.git
-   cd sprint-1
+   cd sprint_1
    ```
 
 2. Check your current Python version
