@@ -62,7 +62,7 @@ class DisplayDataInTerminal:
         Does string formatting and at the end, returns start time and end time
         :return: None
         """
-        rand_year = randrange(datetime.now().year + 1, datetime.now().year + 10)
+        rand_year = randrange(2027, datetime.now().year + 10)
         rand_month = randrange(1, 12)
         if self.is_leap_year(rand_year) and rand_month == 2:
             rand_day = randrange(1, 28)
@@ -130,10 +130,24 @@ class DisplayDataInTerminal:
         Loops though my bookings and cancels them
         :return: None
         """
+        errors = 0
+        reason = ""
+        success = 0
         for booking_id in self.all_my_booking_ids:
             cancel_booking_response = self.instance.cancel_meeting_room(booking_id)
             print(f"Attempt to cancel booking with id {booking_id}. Response: {cancel_booking_response}")
-        print("All of your bookings has been successfully canceled")
+            try:
+
+                if cancel_booking_response['error']:
+                    errors += 1
+                    reason = cancel_booking_response['error']
+                if cancel_booking_response['success']:
+                    success += 1
+            except KeyError as ke:
+                pass
+        print(f"{errors} bookings could not be canceled because of:"
+              f" '{reason}'"
+              f"{success} of your bookings has been successfully canceled")
 
     def cancel_a_random_booking(self):
         """
