@@ -50,7 +50,7 @@ class DisplayDataInTerminal:
         :param year:
         :return:
         """
-        if (year & 4 == 0 and year % 100 != 0) or (year % 400 == 0):
+        if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0):
             return True
         return False
 
@@ -68,26 +68,24 @@ class DisplayDataInTerminal:
             rand_day = randrange(1, 28)
         else:
             rand_day = randrange(1, 31)
-        random_hour = randrange(0, 23)
+        rand_hour = randrange(0, 23)
         valid_minutes = list(range(0, 60, 15))
         random_minute = random.choice(valid_minutes)
-        start_time_str = f"{random_hour}:{random_minute}:00"
+        start_time_str = f"{rand_hour}:{random_minute}:00"
         start_time_object = datetime.strptime(start_time_str, "%H:%M:%S")
         start_time_str_formatted = start_time_object.strftime("%I:%M %p")
         if random_minute == 45:
-            end_time_str = f"{random_hour + 1}:00:00"
+            end_time_str = f"{rand_hour + 1}:00:00"
         else:
-            end_time_str = f"{random_hour}:{random_minute + 15}:00"
+            end_time_str = f"{rand_hour}:{random_minute + 15}:00"
         end_time_object = datetime.strptime(end_time_str, "%H:%M:%S")
         end_time_str_formatted = end_time_object.strftime("%I:%M %p")
-        start_datetime = ""
-        end_datetime = ""
-        if rand_month < 10:
-            start_datetime = f"{rand_year}-0{rand_month}-{rand_day} {start_time_str_formatted}"
-            end_datetime = f"{rand_year}-0{rand_month}-{rand_day} {end_time_str_formatted}"
-        if rand_day < 10:
-            start_datetime = f"{rand_year}-{rand_month}-0{rand_day} {start_time_str_formatted}"
-            end_datetime = f"{rand_year}-{rand_month}-0{rand_day} {end_time_str_formatted}"
+
+        start_datetime = f"{rand_year}-{rand_month:02d}-{rand_day:02d} {start_time_str_formatted}"
+        end_datetime = f"{rand_year}-{rand_month:02d}-{rand_day:02d} {end_time_str_formatted}"
+
+        assert start_datetime is not None
+        assert end_datetime is not None
         return start_datetime, end_datetime
 
     def display_available_rooms(self):
