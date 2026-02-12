@@ -36,6 +36,7 @@ class RoomBooking:
     @handle_request_exceptions
     def authenticate(self) -> None:
         """
+        METHOD: POST
         login at the endpoint 'api/v1/member/login/ '
         returns the access token and refresh token
         :return: None
@@ -59,14 +60,8 @@ class RoomBooking:
         :return: json
         """
         endpoint = "/api/v1/meeting-rooms/available/"
-        start_time = "2026-03-05 12:15 PM"
-        end_time = "2026-03-05 12:30 PM"
-        time = {
-            "start_time": start_time,
-            "end_time": end_time,
-        }
 
-        rooms = requests.get(f"{self.api}/{endpoint}", headers=self.headers, json=time, timeout=2)
+        rooms = requests.get(f"{self.api}/{endpoint}", headers=self.headers, timeout=2)
         return rooms.json()
 
     @handle_request_exceptions
@@ -82,11 +77,13 @@ class RoomBooking:
             "end_time": end_time,
         }
         response = requests.post(endpoint, headers=self.headers, json=booking_time, timeout=2)
+        print(response.json())
         return response.json()
 
     @handle_request_exceptions
     def list_my_bookings(self) -> json or None:
         """
+        METHOD: GET
         Returns all my bookings
         :return:
         """
@@ -97,7 +94,7 @@ class RoomBooking:
     @handle_request_exceptions
     def cancel_meeting_room(self, booking_id: int) -> json or None:
         """
-        METHOD: POST
+        METHOD: DELETE
         Objective: cancel a booking based on the id
         :param booking_id:
         :return: json or None

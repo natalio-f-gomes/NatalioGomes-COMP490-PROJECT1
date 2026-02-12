@@ -137,16 +137,14 @@ class DisplayDataInTerminal:
             cancel_booking_response = self.instance.cancel_meeting_room(booking_id)
             print(f"Attempt to cancel booking with id {booking_id}. Response: {cancel_booking_response}")
             try:
-
                 if cancel_booking_response['error']:
                     errors += 1
                     reason = cancel_booking_response['error']
+            except KeyError:
                 if cancel_booking_response['success']:
                     success += 1
-            except KeyError:
-                pass
         print(f"{errors} bookings could not be canceled because of:"
-              f" '{reason}'"
+              f" '{reason}'.\n"
               f"{success} of your bookings has been successfully canceled")
 
     def cancel_a_random_booking(self):
