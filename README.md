@@ -4,10 +4,9 @@
 #### Section: 003
 
 ## 2 Sprints
-### Sprint 1: sprint_1
-    Purpose: Capture Audio and gets transcript
-### Sprint 2: sprint_2
-    Purpose: API requests
-
-
-
+### Sprint 1: Capture Audio and gets transcript
+    cd sprint_1
+    Follow the readme instructions
+### Sprint 2: API requests
+    cd sprint_2
+    Follow the readme instructions
