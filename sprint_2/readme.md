@@ -55,3 +55,8 @@ Notes: The DisplayDataInTerminal located in the display_data.py exists to quickl
 ```bash
 python -m pytest
 ```
+
+8. Running GitHub Actions Test
+
+Select the Sprint-2 Workflow and run the workflow.
+The workflow also gets triggered automatically by a push to the main branch
