@@ -40,8 +40,17 @@
    ```bash
    pip install -r requirements.txt
    ```
+6. Env Secrets
+Create a (.env) located inside sprint_2 dir and fill the secrets.
 
-6. Running the Application
+```bash
+EMAIL=
+PASSWORD=
+SERVER_ADDRESS=
+SERVER_PORT=
+```
+
+7. Running the Application
 
 ```bash
 python3 main.py # macOS
@@ -50,13 +59,13 @@ python main.py  # windows
 
 Notes: The DisplayDataInTerminal located in the display_data.py exists to quickly CRUD the data
 
-7. Running Tests
+8. Running Tests
 
 ```bash
 python -m pytest
 ```
 
-8. Running GitHub Actions Test
+9. Running GitHub Actions Workflows
 
 Select the Sprint-2 Workflow and run the workflow.
 The workflow also gets triggered automatically by a push to the main branch
