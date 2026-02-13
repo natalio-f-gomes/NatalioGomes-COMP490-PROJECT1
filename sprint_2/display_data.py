@@ -62,7 +62,7 @@ class DisplayDataInTerminal:
         Does string formatting and at the end, returns start time and end time
         :return: None
         """
-        rand_year = randrange(datetime.now().year + 1, datetime.now().year)
+        rand_year = randrange(datetime.now().year + 1, datetime.now().year + 10)
         rand_month = randrange(1, 12)
         if self.is_leap_year(rand_year) and rand_month == 2:
             rand_day = randrange(1, 28)
