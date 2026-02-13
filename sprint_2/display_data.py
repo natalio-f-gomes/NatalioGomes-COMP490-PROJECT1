@@ -62,8 +62,7 @@ class DisplayDataInTerminal:
         Does string formatting and at the end, returns start time and end time
         :return: None
         """
-        current_year = datetime.now().year
-        rand_year = randrange(current_year + 1, current_year + 10)
+        rand_year = randrange(datetime.now().year + 1, datetime.now().year)
         rand_month = randrange(1, 12)
         if self.is_leap_year(rand_year) and rand_month == 2:
             rand_day = randrange(1, 28)
@@ -134,7 +133,8 @@ class DisplayDataInTerminal:
         success = 0
         for booking_id in self.all_my_booking_ids:
             cancel_booking_response = self.instance.cancel_meeting_room(booking_id)
-            print(f"Attempt to cancel booking with id {booking_id}. Response: {cancel_booking_response}")
+            print(f"Attempt to cancel booking with id {booking_id}."
+                  f" Response: {cancel_booking_response}")
             try:
                 if cancel_booking_response['error']:
                     errors += 1
