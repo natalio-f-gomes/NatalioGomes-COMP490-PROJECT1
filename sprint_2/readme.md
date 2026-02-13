@@ -16,7 +16,7 @@
 1. Clone the repository and navigate into the project folder
 
    ```bash
-   git clone git@github.com:natalio-f-gomes/COMP490-Project1.git
+   git clone git@github.com:natalio-f-gomes/NatalioGomes-COMP490-PROJECT1.git
    cd sprint_2
    ```
 
