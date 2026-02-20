@@ -1,0 +1,7 @@
+# created by virtualenv automatically
+.venv/
+vosk-api/
+.env
+recording/
+temp.py
+TODO.md
