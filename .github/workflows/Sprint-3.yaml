@@ -121,6 +121,11 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Clone Vosk-API
+        env:
+          PYTHONPATH: sprint_1
+        run: git clone https://github.com/alphacep/vosk-api
+
       - name: Install dependencies
         working-directory: sprint_2
         run: |
