@@ -105,17 +105,15 @@ class RealTimeTranscription:
         Responsible for calling claude AI and give sit the user prompt.
         :return: None
         """
-
         instance = FilterLogic()
         user_prompt = json.loads(self.recognizer.FinalResult())
         user_prompt = user_prompt.get("text", "")
         if user_prompt:
             print(f"User Prompt:   {user_prompt}")
             self.all_transcriptions.append(user_prompt)
-
         full_user_query = " ".join(self.all_transcriptions)
-        full_user_query = full_user_query[:full_user_query.find(self.execution_command)].strip()
-        full_user_query = full_user_query.replace(self.execution_command, "")
+        full_user_query = (full_user_query[:full_user_query.find(self.execution_command)]
+                           .strip().replace(self.execution_command, ""))
         instance.call_claude_ai(full_user_query)
 
     def close_audio_capture(self, audio_stream: object, audio_blocks: list[numpy.ndarray],
