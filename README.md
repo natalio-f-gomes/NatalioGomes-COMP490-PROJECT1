@@ -10,3 +10,7 @@
 ### Sprint 2: API requests
     cd sprint_2
     Follow the readme instructions
+
+### Sprint 3: Integration of AI
+    cd sprint_3
+    Follow the readme instructions

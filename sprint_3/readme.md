@@ -45,7 +45,7 @@
    ```
 
 6. Env Secrets
-Create a (.env) located inside sprint_2 dir and fill the secrets.
+Create a (.env) located inside sprint_3 dir and fill the secrets.
 
 ```bash
 EMAIL=
