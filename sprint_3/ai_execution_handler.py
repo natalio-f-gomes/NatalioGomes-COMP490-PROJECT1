@@ -38,17 +38,17 @@ class FilterLogic:
         """
         for key, value in data.items():
             if key == "booking_id":
-                self.filter_booking_by_key("id", int(value))
+                self.filter_booking("id", int(value))
             elif key == "room_id":
-                self.filter_room_by_key("id", int(value))
+                self.filter_room("id", int(value))
             elif key in {"room_name", "capacity"}:
-                self.filter_room_by_key(key, value)
+                self.filter_room(key, value)
             elif key in {"start_time", "end_time"}:
-                self.filter_booking_by_key(key, value)
+                self.filter_booking(key, value)
 
         return self.all_my_bookings
 
-    def filter_booking_by_key(self, key: str, value: str or int) -> None:
+    def filter_booking(self, key: str, value: str or int) -> None:
         """
         filters the bookings based on the data
         :param key:
@@ -58,7 +58,7 @@ class FilterLogic:
         self.all_my_bookings = [i for i in self.all_my_bookings
                                 if str(i.get(key, '')).startswith(str(value))]
 
-    def filter_room_by_key(self, key: str, value: str or int) -> None:
+    def filter_room(self, key: str, value: str or int) -> None:
         """
        filters the rooms data based on the data
        :param key:
@@ -75,7 +75,7 @@ class FilterLogic:
         :return: str
         """
         room_names = set(
-            b['meeting_room']['room_name'] for b in self.all_my_bookings
+            booking['meeting_room']['room_name'] for booking in self.all_my_bookings
         )
         return f""""You are a data extraction assistant. Given a user query,
             return ONLY a json format. No explanation.
@@ -131,25 +131,24 @@ class FilterLogic:
             model="claude-sonnet-4-5-20250929",
             max_tokens=1024,
             messages=[
-                {"role": "user", "content": f"""
-                {self.get_content()}
+                {"role": "user", "content": f""" {self.get_content()}
                 Prompt: {prompt}
                 """}
             ]
         )
-
         raw_message = message.content[0].text
         clean_message = self.clean_json_response(raw_message)
         print(f"clean message {clean_message}")
-        data = json.loads(clean_message)
-        print(data)
-        if "list_all_bookings" in data:
-            print(self.all_my_bookings)
-
-        print(f"DATA {data}")
-
-        result = self.filter_by_key(data)
-        print(f"RESULT: ")
-        print(result)
-        for room in result:
-            print(f"Booking {room}")
+        try:
+            data = json.loads(clean_message)
+            print(data)
+            if "list_all_bookings" in data:
+                print(self.all_my_bookings)
+            print(f"DATA {data}")
+            result = self.filter_by_key(data)
+            print(f"RESULT: ")
+            print(result)
+            for room in result:
+                print(f"Booking {room}")
+        except json.decoder.JSONDecodeError as error:
+            print(f"There was a problem with your prompt. {error}\nPlease try again.")

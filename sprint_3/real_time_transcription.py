@@ -110,7 +110,7 @@ class RealTimeTranscription:
         user_prompt = json.loads(self.recognizer.FinalResult())
         user_prompt = user_prompt.get("text", "")
         if user_prompt:
-            print(f"User Prompt:   {user_prompt}")
+            print(f"User Prompt:\t{user_prompt}")
             self.all_transcriptions.append(user_prompt)
 
         full_user_query = " ".join(self.all_transcriptions)
