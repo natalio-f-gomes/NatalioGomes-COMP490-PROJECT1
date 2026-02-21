@@ -172,4 +172,4 @@ jobs:
           pwd
           cd sprint_3
           ls -la
-          python -m pytest tests/ -v --tb=long
+          python -m pytest tests/*
