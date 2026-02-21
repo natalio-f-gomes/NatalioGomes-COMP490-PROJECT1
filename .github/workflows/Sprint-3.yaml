@@ -126,6 +126,12 @@ jobs:
           PYTHONPATH: sprint_3
         run: git clone https://github.com/alphacep/vosk-api
 
+      - name: Install system requirements
+        working-directory: sprint_1
+        run: |
+          sudo apt-get update
+          sudo apt-get install portaudio19-dev
+
       - name: Install dependencies
         working-directory: sprint_3
         run: |
