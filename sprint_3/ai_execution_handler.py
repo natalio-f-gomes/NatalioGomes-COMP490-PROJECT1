@@ -36,16 +36,19 @@ class FilterLogic:
         :param data: dict
         :return: list[dict]
         """
-        room_keys = {"id", "room_name", "capacity"}
-        booking_keys = {"id", "start_time", "end_time"}
         for key, value in data.items():
-            if key in room_keys:
+            if key == "booking_id":
+                self.filter_booking_by_key("id", int(value))
+            elif key == "room_id":
+                self.filter_room_by_key("id", int(value))
+            elif key in {"room_name", "capacity"}:
                 self.filter_room_by_key(key, value)
-            elif key in booking_keys:
+            elif key in {"start_time", "end_time"}:
                 self.filter_booking_by_key(key, value)
+
         return self.all_my_bookings
 
-    def filter_booking_by_key(self, key: str, value: str) -> None:
+    def filter_booking_by_key(self, key: str, value: str or int) -> None:
         """
         filters the bookings based on the data
         :param key:
@@ -55,13 +58,14 @@ class FilterLogic:
         self.all_my_bookings = [i for i in self.all_my_bookings
                                 if str(i.get(key, '')).startswith(str(value))]
 
-    def filter_room_by_key(self, key: str, value: str) -> None:
+    def filter_room_by_key(self, key: str, value: str or int) -> None:
         """
        filters the rooms data based on the data
        :param key:
        :param value:
        :return: None
        """
+
         self.all_my_bookings = [i for i in self.all_my_bookings
                                 if i['meeting_room'].get(key) == value]
 
@@ -74,8 +78,9 @@ class FilterLogic:
             b['meeting_room']['room_name'] for b in self.all_my_bookings
         )
         return f""""You are a data extraction assistant. Given a user query,
-            return ONLY a python tuple with keywords for dictionary and function name with the relevant filter keys. No explanation.
+            return ONLY a json format. No explanation.
             Make sure to convert the text number to numeral number every time
+            ALL KEYS AND VALUES OF THE DICTIONARY MUST BE STRING in  double quotes
             Available room names: {room_names}
             IMPORTANT: Only use room names from this list. Match the user's input 
             to the closest room name from the list.
@@ -83,9 +88,10 @@ class FilterLogic:
             Datetime format = YEAR-MONTH-DAY T HOUR:MIN:SEC
             Room data format example: dict 'id': 1, 'meeting_room': dict ('id': 1, 'room_name': 'Alpha', 'capacity': n), 
             'start_time': 'Datetime format', 'end_time': 'Datetime format'
-            ATTENTION: Booking Only has id, start_time and end_time
-                       meeting_room: id, room_name, capacity
-            
+            ATTENTION: Booking Only has booking_id, start_time and end_time
+                       meeting_room: room_id, room_name, capacity
+            if the user is looking for all booking or all rooms:
+                ONLY return list_all_bookings
             Example:
             User: "when is my reservation for Room Alpha?"
             Output: dict key "room_name": dict value "Alpha", 
@@ -97,8 +103,21 @@ class FilterLogic:
             User: "Do I have a reservation in Room 1 today?" 
             Output:  dict key "room_name": dict value "Room 1" dict "start_time": 
                     "today's date in the format specified"
-            
+            return ONLY a json format. No explanation.
         """
+
+    @staticmethod
+    def clean_json_response(raw_message: str) -> str:
+        """
+        Gets the first {, rfind("}") gets the last }.
+        :param raw_message:
+        :return: str
+        """
+        start = raw_message.find("{")
+        end = raw_message.rfind("}") + 1
+        if start != -1 and end > 0:
+            return raw_message[start:end]
+        return raw_message
 
     def call_claude_ai(self, prompt: str) -> None:
         """
@@ -106,6 +125,7 @@ class FilterLogic:
         :param prompt: str
         :return: None
         """
+        print(f"prompt {prompt}")
         client = Anthropic(api_key=os.environ.get("CLAUDE_API_KEY"))
         message = client.messages.create(
             model="claude-sonnet-4-5-20250929",
@@ -119,11 +139,15 @@ class FilterLogic:
         )
 
         raw_message = message.content[0].text
-        clean_message = (raw_message.replace("```python", "")
-                         .replace("```", "").strip())
-        print(f"Clean Message {clean_message}")
+        clean_message = self.clean_json_response(raw_message)
+        print(f"clean message {clean_message}")
         data = json.loads(clean_message)
+        print(data)
+        if "list_all_bookings" in data:
+            print(self.all_my_bookings)
+
         print(f"DATA {data}")
+
         result = self.filter_by_key(data)
         print(f"RESULT: ")
         print(result)

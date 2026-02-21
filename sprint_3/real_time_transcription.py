@@ -73,6 +73,16 @@ class RealTimeTranscription:
         print(f"Audio saved to {audio_location}. Duration: {duration:.3f} seconds")
         return audio_location
 
+    def print_instructions(self) -> str:
+        """
+        Returns the instructions for the CLI
+        :return: str
+        """
+        return (f"{"="*50}RECORDING{"="*50}\n "
+                f"PLEASE SPEAK CLEARLY IN THE MICROPHONE\n"
+                f"(SAY THE COMMAND: '{self.execution_command}' to EXECUTE A QUERY)\n"
+                f"(SAY THE COMMAND: '{self.exit_command}' to STOP)\n")
+
     def put_recording_blocks_together(self, audio_blocks: list[numpy.ndarray]) \
             -> numpy.ndarray or None:
         """
@@ -102,7 +112,9 @@ class RealTimeTranscription:
         if user_prompt:
             print(f"User Prompt:   {user_prompt}")
             self.all_transcriptions.append(user_prompt)
+
         full_user_query = " ".join(self.all_transcriptions)
+        full_user_query = full_user_query[:full_user_query.find(self.execution_command)].strip()
         full_user_query = full_user_query.replace(self.execution_command, "")
         instance.call_claude_ai(full_user_query)
 
@@ -144,9 +156,7 @@ class RealTimeTranscription:
         audio_blocks = []
         exit_program = False
         try:
-            print(f"... RECORDING ...\n"
-                  f"(SAY THE COMMAND: '{self.execution_command}' to EXECUTE A QUERY)\n"
-                  f"(SAY THE COMMAND: '{self.exit_command}' to STOP)\n")
+            print(self.print_instructions())
             audio_stream.start()
             while exit_program is not True:
                 try:
@@ -181,7 +191,6 @@ class RealTimeTranscription:
         except KeyboardInterrupt:
             print("\n\nStopping...")
             self.close_audio_capture(audio_stream, audio_blocks, exit_program)
-
         finally:
             self.close_audio_capture(audio_stream, audio_blocks, exit_program)
 
