@@ -24,14 +24,14 @@ class TestAIExecutionHandler:
         filter_instance = FilterLogic()
         all_bookings_before_filtering = filter_instance.all_my_bookings
         assert all_bookings_before_filtering is not None
-        filter_instance.filter_booking('id', '317')
+        filter_instance.filter_booking('id', '1355')
         all_bookings_after_filtering = filter_instance.all_my_bookings
         assert all_bookings_after_filtering is not None
-        assert all_bookings_after_filtering[0]['id'] == 317
-        assert all_bookings_after_filtering[0]['meeting_room']['id'] == 2
-        assert all_bookings_after_filtering[0]['meeting_room']['room_name'] == "Room B"
-        assert all_bookings_after_filtering[0]['meeting_room']['capacity'] == 10
-        assert all_bookings_after_filtering[0]['meeting_room']['capacity'] != "10"
+        assert all_bookings_after_filtering[0]['id'] == 1355
+        assert all_bookings_after_filtering[0]['meeting_room']['id'] == 7
+        assert all_bookings_after_filtering[0]['meeting_room']['room_name'] == "DMF Small Office"
+        assert all_bookings_after_filtering[0]['meeting_room']['capacity'] == 4
+        assert all_bookings_after_filtering[0]['meeting_room']['capacity'] != "4"
 
     def test_filter_room(self):
         """ Checks if the filtering of room is working"""

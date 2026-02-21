@@ -48,7 +48,7 @@ class FilterLogic:
 
         return self.all_my_bookings
 
-    def filter_booking(self, key: str, value: str or int) -> None:
+    def filter_booking(self, key: str, value: object) -> None:
         """
         filters the bookings based on the data
         :param key:
@@ -58,7 +58,7 @@ class FilterLogic:
         self.all_my_bookings = [i for i in self.all_my_bookings
                                 if str(i.get(key, '')).startswith(str(value))]
 
-    def filter_room(self, key: str, value: str or int) -> None:
+    def filter_room(self, key: str, value: object) -> None:
         """
        filters the rooms data based on the data
        :param key:

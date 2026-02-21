@@ -10,7 +10,7 @@ import datetime
 import numpy
 from numpy.testing import assert_array_equal
 
-from app import RealTimeTranscription
+from real_time_transcription import RealTimeTranscription
 
 
 class TestApp:
@@ -27,7 +27,7 @@ class TestApp:
         audio_queue = instance.audio_queue
         assert audio_queue.full() is False
         assert audio_queue.empty() is True
-        assert instance.exit_command == "exit the program"
+        assert instance.exit_command == "terminate"
         assert instance.recognizer.Result() == '{"text": ""}'
 
     def test_1d_array_add_audio_to_queue(self):
