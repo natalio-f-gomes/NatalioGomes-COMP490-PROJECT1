@@ -1,0 +1,161 @@
+name: Sprint-3 Unit Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  Sprint-1:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        working-directory: sprint_1
+        run: |
+          python --version
+          python -m pip install --upgrade pip
+          pip install pylint pytest
+          pip install -r requirements.txt
+          pip install pylint-venv
+          pwd
+
+      - name: Install system requirements
+        working-directory: sprint_1
+        run: |
+          sudo apt-get update
+          sudo apt-get install portaudio19-dev
+
+      - name: Lint with pylint
+        env:
+          PYTHONPATH: sprint_1
+        run: |
+          pylint sprint_1 \
+            --init-hook="import pylint_venv; pylint_venv.inithook()" \
+            --max-line-length=120 \
+            --disable=W0613
+
+      - name: Clone Vosk-API
+        env:
+          PYTHONPATH: sprint_1
+        run: git clone https://github.com/alphacep/vosk-api
+
+      - name: Run Unit Tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}/Sprint-1
+        run: |
+          cd sprint_1
+          ls -la
+          python -m pytest -v --tb=long
+
+  Sprint-2:
+    needs: Sprint-1
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        working-directory: sprint_2
+        run: |
+          sudo apt-get update
+          python --version
+          python -m pip install --upgrade pip
+          pip install pylint pytest
+          pip install -r requirements.txt
+          pip install pylint-venv
+          pwd
+
+      - name: Lint with pylint
+        env:
+          PYTHONPATH: sprint_2
+        run: |
+          pylint sprint_2 \
+            --init-hook="import pylint_venv; pylint_venv.inithook()" \
+            --max-line-length=120
+      - name: Debug env vars
+        run: |
+          echo "SERVER_ADDRESS is set: ${{ secrets.SERVER_ADDRESS != '' }}"
+          echo "SERVER_PORT is set: ${{ secrets.SERVER_PORT != '' }}"
+
+      - name: Run Unit Tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}/sprint_2
+          SERVER_ADDRESS: ${{ secrets.SERVER_ADDRESS }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
+          EMAIL: ${{ secrets.EMAIL }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          pwd
+          cd sprint_2
+          ls -la
+          python -m pytest tests/ -v --tb=long
+          
+
+  Sprint-3:
+    needs: Sprint-2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        working-directory: sprint_2
+        run: |
+          sudo apt-get update
+          python --version
+          python -m pip install --upgrade pip
+          pip install pylint pytest
+          pip install -r requirements.txt
+          pip install pylint-venv
+          pwd
+
+      - name: Lint with pylint
+        env:
+          PYTHONPATH: sprint_3
+        run: |
+          pylint sprint_3 \
+            --init-hook="import pylint_venv; pylint_venv.inithook()" \
+            --max-line-length=120
+      - name: Debug env vars
+        run: |
+          echo "SERVER_ADDRESS is set: ${{ secrets.SERVER_ADDRESS != '' }}"
+          echo "SERVER_PORT is set: ${{ secrets.SERVER_PORT != '' }}"
+          echo "EMAIL is set: ${{ secrets.EMAIL != '' }}"
+          echo "PASSWORD is set: ${{ secrets.PASSWORD != '' }}"
+          echo "CLAUDE API KEY is set: ${{ secrets.CLAUDE_API_KEY != '' }}"
+
+      - name: Run Unit Tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}/sprint_3
+          SERVER_ADDRESS: ${{ secrets.SERVER_ADDRESS }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
+          EMAIL: ${{ secrets.EMAIL }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          pwd
+          cd sprint_3
+          ls -la
+          python -m pytest tests/ -v --tb=long
