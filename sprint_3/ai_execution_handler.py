@@ -24,7 +24,7 @@ class FilterLogic:
         """
         Class Initializer
         """
-        load_dotenv()
+        load_dotenv(override=False)
         self.room_instance = RoomBooking()
         self.room_instance.authenticate()
         self.all_my_bookings = self.room_instance.list_my_bookings()
@@ -126,7 +126,7 @@ class FilterLogic:
         :return: None
         """
         print(f"prompt {prompt}")
-        client = Anthropic(api_key=os.environ.get("CLAUDE_API_KEY"))
+        client = Anthropic(api_key=os.getenv("CLAUDE_API_KEY"))
         message = client.messages.create(
             model="claude-sonnet-4-5-20250929",
             max_tokens=1024,
