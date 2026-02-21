@@ -51,7 +51,8 @@ class RealTimeTranscription:
             print(f"Status: {status}")
         self.audio_queue.put(input_data.copy())
 
-    def get_audio_location(self, recording: numpy.ndarray,
+    @staticmethod
+    def get_audio_location( recording: numpy.ndarray,
                            current_time: datetime = datetime.now()) -> str or None:
         """
         :param current_time:

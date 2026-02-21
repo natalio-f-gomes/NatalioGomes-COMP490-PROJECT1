@@ -29,7 +29,7 @@ class FilterLogic:
         self.room_instance.authenticate()
         self.all_my_bookings = self.room_instance.list_my_bookings()
 
-    def filter_by_key(self, data: dict) -> list[dict]:
+    def filter_by_ai_data(self, data: dict) -> list[dict]:
         """
         if the keys passed belongs to room call filter_room_by_key
         otherwise call filter_booking_by_key
@@ -137,6 +137,7 @@ class FilterLogic:
             ]
         )
         raw_message = message.content[0].text
+        print("raw message: " + raw_message)
         clean_message = self.clean_json_response(raw_message)
         print(f"clean message {clean_message}")
         try:
@@ -145,10 +146,10 @@ class FilterLogic:
             if "list_all_bookings" in data:
                 print(self.all_my_bookings)
             print(f"DATA {data}")
-            result = self.filter_by_key(data)
-            print(f"RESULT: ")
-            print(result)
+            result = self.filter_by_ai_data(data)
+            print("RESULT: ")
             for room in result:
                 print(f"Booking {room}")
         except json.decoder.JSONDecodeError as error:
             print(f"There was a problem with your prompt. {error}\nPlease try again.")
+            raise
