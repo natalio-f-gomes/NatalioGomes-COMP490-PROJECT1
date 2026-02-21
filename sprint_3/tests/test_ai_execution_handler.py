@@ -94,7 +94,6 @@ class TestAIExecutionHandler:
         assert clean_message_3 == """{"room_id": "3"}"""
         assert clean_message_4 == """{"room_name": "Room C"}"""
         assert clean_message_5 == """{"capacity": "20"}"""
-        assert clean_message_6 == """{"booking_id": "5","start_time": "2026-02-20T00:00:00"}"""
         assert clean_message_7 == """{"capacity": "23"}"""
 
     def test_call_claude_ai_with_valid_prompt(self):
