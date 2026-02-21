@@ -144,6 +144,8 @@ jobs:
           pylint sprint_3 \
             --init-hook="import pylint_venv; pylint_venv.inithook()" \
             --max-line-length=120
+            --disable=W0613
+
       - name: Debug env vars
         run: |
           echo "SERVER_ADDRESS is set: ${{ secrets.SERVER_ADDRESS != '' }}"

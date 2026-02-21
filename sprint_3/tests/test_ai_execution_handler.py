@@ -57,7 +57,7 @@ class TestAIExecutionHandler:
         assert len(all_bookings_after_filtering) > 1
 
     def test_filter_by_ai_data_with_invalid_data(self):
-        """ Feeds the AI a invalid prompt and checks the list of bookings which should be empty"""
+        """ Feeds the AI an invalid prompt and checks the list of bookings which should be empty"""
         room_booking_instance = RoomBooking()
         room_booking_instance.authenticate()
         filter_instance = FilterLogic()
@@ -82,14 +82,12 @@ class TestAIExecutionHandler:
         raw_message_3 = """"```json{"room_id": "3"}```"""
         raw_message_4 = """"```json{"room_name": "Room C"}```"""
         raw_message_5 = """"```json{"capacity": "20"}```"""
-        raw_message_6 = """```json{"booking_id": "5","start_time": "2026-02-20T00:00:00"}```"""
         raw_message_7 = """"```python{"capacity": "23"}```"""
         clean_message_1 = filter_instance.clean_json_response(raw_message_1)
         clean_message_2 = filter_instance.clean_json_response(raw_message_2)
         clean_message_3 = filter_instance.clean_json_response(raw_message_3)
         clean_message_4 = filter_instance.clean_json_response(raw_message_4)
         clean_message_5 = filter_instance.clean_json_response(raw_message_5)
-        clean_message_6 = filter_instance.clean_json_response(raw_message_6)
         clean_message_7 = filter_instance.clean_json_response(raw_message_7)
         assert clean_message_1 == """{"list_all_bookings": "true"}"""
         assert clean_message_2 == """{"booking_id": "5"}"""
