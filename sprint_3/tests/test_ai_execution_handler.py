@@ -7,8 +7,8 @@ Purpose: This file tests the methods of the ai_execution_handler.py file
 """
 
 import os
-import pytest
 import random
+import pytest
 from ai_execution_handler import FilterLogic
 from room_booking import RoomBooking
 from audio_transcription import transcribe_audio
@@ -29,11 +29,11 @@ class TestAIExecutionHandler:
         filter_instance.filter_booking('id', random_booking['id'])
         all_bookings_after_filtering = filter_instance.all_my_bookings
         assert all_bookings_after_filtering is not None
-        assert all_bookings_after_filtering[0]['id'] == 1355
-        assert all_bookings_after_filtering[0]['meeting_room']['id'] == random_booking['id']
-        assert all_bookings_after_filtering[0]['meeting_room']['room_name'] == random_booking['room_name']['id']
-        assert all_bookings_after_filtering[0]['meeting_room']['capacity'] == random_booking['room_name']['capacity']
-        assert isinstance(int,all_bookings_after_filtering[0]['meeting_room']['capacity'])
+        assert all_bookings_after_filtering[0]['id'] ==  random_booking['id']
+        assert all_bookings_after_filtering[0]['meeting_room']['id'] == random_booking['meeting_room']['id']
+        assert all_bookings_after_filtering[0]['meeting_room']['room_name'] == random_booking['meeting_room']['room_name']
+        assert all_bookings_after_filtering[0]['meeting_room']['capacity'] == random_booking['meeting_room']['capacity']
+        assert isinstance(all_bookings_after_filtering[0]['meeting_room']['capacity'], int)
 
     def test_filter_room(self):
         """ Checks if the filtering of room is working"""
