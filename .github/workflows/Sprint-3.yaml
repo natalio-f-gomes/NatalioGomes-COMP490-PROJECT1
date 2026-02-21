@@ -1,10 +1,6 @@
 name: Sprint-3 Unit Tests
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -154,6 +150,7 @@ jobs:
           SERVER_PORT: ${{ secrets.SERVER_PORT }}
           EMAIL: ${{ secrets.EMAIL }}
           PASSWORD: ${{ secrets.PASSWORD }}
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
         run: |
           pwd
           cd sprint_3
