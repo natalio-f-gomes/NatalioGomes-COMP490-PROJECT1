@@ -16,7 +16,7 @@ import sounddevice
 from vosk import Model, KaldiRecognizer
 from static_values import get_channel, get_sample_rate, get_d_type
 from audio_transcription import transcribe_audio, write_transcription_to_a_file
-from ai_execution_handler import FilterRoom
+from ai_execution_handler import FilterLogic
 
 
 class RealTimeTranscription:
@@ -38,7 +38,6 @@ class RealTimeTranscription:
         self.execution_command = "execute"
         self.all_transcriptions = []
 
-
     def put_audio_in_the_queue(
             self,
             input_data: numpy.ndarray,
@@ -55,7 +54,8 @@ class RealTimeTranscription:
             print(f"Status: {status}")
         self.audio_queue.put(input_data.copy())
 
-    def get_audio_location(self, recording: numpy.ndarray,
+    @staticmethod
+    def get_audio_location(recording: numpy.ndarray,
                            current_time: datetime = datetime.now()) -> str or None:
         """
         :param current_time:
@@ -73,7 +73,7 @@ class RealTimeTranscription:
         print(f"Audio saved to {audio_location}. Duration: {duration:.3f} seconds")
         return audio_location
 
-    def put_recording_blocks_together(self, audio_blocks: list[numpy.ndarray])\
+    def put_recording_blocks_together(self, audio_blocks: list[numpy.ndarray]) \
             -> numpy.ndarray or None:
         """
         :param audio_blocks
@@ -96,7 +96,7 @@ class RealTimeTranscription:
         :return: None
         """
 
-        instance = FilterRoom()
+        instance = FilterLogic()
         user_prompt = json.loads(self.recognizer.FinalResult())
         user_prompt = user_prompt.get("text", "")
         if user_prompt:
@@ -105,6 +105,27 @@ class RealTimeTranscription:
         full_user_query = " ".join(self.all_transcriptions)
         full_user_query = full_user_query.replace(self.execution_command, "")
         instance.call_claude_ai(full_user_query)
+
+    def close_audio_capture(self, audio_stream: object, audio_blocks: list[numpy.ndarray],
+                            exit_program: bool) -> None:
+        """
+        Either when the user says the exit command or kills the program abruptly
+        this method is called it gathers the final pieces.
+        :param audio_stream: object
+        :param audio_blocks: list[numpy.ndarray]
+        :param exit_program: bool
+        :return: None
+        """
+        audio_stream.stop()
+        audio_stream.close()
+        # Grab any remaining text the recognizer hasn't finalized
+        final = json.loads(self.recognizer.FinalResult())
+        final_text = final.get("text", "")
+        if final_text:
+            print(f"Transcript:   {final_text}")
+            self.all_transcriptions.append(final_text)
+        if exit_program:
+            self.put_recording_blocks_together(audio_blocks)
 
     def record(self) -> str:
         """
@@ -122,7 +143,6 @@ class RealTimeTranscription:
         )
         audio_blocks = []
         exit_program = False
-
         try:
             print(f"... RECORDING ...\n"
                   f"(SAY THE COMMAND: '{self.execution_command}' to EXECUTE A QUERY)\n"
@@ -160,21 +180,10 @@ class RealTimeTranscription:
                     pass
         except KeyboardInterrupt:
             print("\n\nStopping...")
+            self.close_audio_capture(audio_stream, audio_blocks, exit_program)
 
         finally:
-            audio_stream.stop()
-            audio_stream.close()
-
-            # Grab any remaining text the recognizer hasn't finalized
-            final = json.loads(self.recognizer.FinalResult())
-            final_text = final.get("text", "")
-
-            if final_text:
-                print(f"Transcript:   {final_text}")
-                self.all_transcriptions.append(final_text)
-
-            if exit_program:
-                self.put_recording_blocks_together(audio_blocks)
+            self.close_audio_capture(audio_stream, audio_blocks, exit_program)
 
         full_transcription = " ".join(self.all_transcriptions)
         full_transcription = full_transcription.replace(self.exit_command, " ")

@@ -14,7 +14,7 @@ from anthropic import Anthropic
 from room_booking import RoomBooking
 
 
-class FilterRoom:
+class FilterLogic:
     """
     Class responsible for loading the secrets, authenticate to api,
     call claude AI and filter by dictionary keys
@@ -94,7 +94,7 @@ class FilterRoom:
             Output: dict "start_time": "2026-02-05",
             Return ONLY valid python dict. No other text.
             
-            User: "Do I have a reservation in Room 1 today?" filter_function: filter_room_by_key
+            User: "Do I have a reservation in Room 1 today?" 
             Output:  dict key "room_name": dict value "Room 1" dict "start_time": 
                     "today's date in the format specified"
             
@@ -121,10 +121,11 @@ class FilterRoom:
         raw_message = message.content[0].text
         clean_message = (raw_message.replace("```python", "")
                          .replace("```", "").strip())
-        # print(f"Clean Message {clean_message}")
+        print(f"Clean Message {clean_message}")
         data = json.loads(clean_message)
-        # print(f"DATA {data}")
+        print(f"DATA {data}")
         result = self.filter_by_key(data)
         print(f"RESULT: ")
+        print(result)
         for room in result:
             print(f"Booking {room}")
