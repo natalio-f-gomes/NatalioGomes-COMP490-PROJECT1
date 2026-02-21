@@ -116,18 +116,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Clone Vosk-API
         env:
-          PYTHONPATH: sprint_1
+          PYTHONPATH: sprint_3
         run: git clone https://github.com/alphacep/vosk-api
 
       - name: Install dependencies
-        working-directory: sprint_2
+        working-directory: sprint_3
         run: |
           sudo apt-get update
           python --version
