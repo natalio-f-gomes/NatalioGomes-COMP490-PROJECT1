@@ -1,6 +1,5 @@
 """
 Author: Natalio Gomes
-Date: Feb3rd, 2026
 Class: COMP 490
 Section: 003
 File: static_values.py

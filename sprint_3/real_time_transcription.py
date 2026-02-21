@@ -118,6 +118,7 @@ class RealTimeTranscription:
         full_user_query = full_user_query.replace(self.execution_command, "")
         instance.call_claude_ai(full_user_query)
 
+
     def close_audio_capture(self, audio_stream: object, audio_blocks: list[numpy.ndarray],
                             exit_program: bool) -> None:
         """

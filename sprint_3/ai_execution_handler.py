@@ -22,7 +22,8 @@ class FilterLogic:
 
     def __init__(self):
         """
-        Class Initializer
+        Class Initializer that loads the secrets
+        and authenticate to api
         """
         load_dotenv(override=False)
         self.room_instance = RoomBooking()
@@ -31,8 +32,8 @@ class FilterLogic:
 
     def filter_by_ai_data(self, data: dict) -> list[dict]:
         """
-        if the keys passed belongs to room call filter_room_by_key
-        otherwise call filter_booking_by_key
+        if the keys passed belongs to room call filter_room
+        otherwise call filter_booking
         :param data: dict
         :return: list[dict]
         """
