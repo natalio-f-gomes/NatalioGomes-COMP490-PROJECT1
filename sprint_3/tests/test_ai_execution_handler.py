@@ -27,13 +27,13 @@ class TestAIExecutionHandler:
         assert all_bookings_before_filtering is not None
         random_booking = all_bookings_before_filtering[random.randint(0, len(all_bookings_before_filtering) - 1)]
         filter_instance.filter_booking('id', random_booking['id'])
-        all_bookings_after_filtering = filter_instance.all_my_bookings
-        assert all_bookings_after_filtering is not None
-        assert all_bookings_after_filtering[0]['id'] ==  random_booking['id']
-        assert all_bookings_after_filtering[0]['meeting_room']['id'] == random_booking['meeting_room']['id']
-        assert all_bookings_after_filtering[0]['meeting_room']['room_name'] == random_booking['meeting_room']['room_name']
-        assert all_bookings_after_filtering[0]['meeting_room']['capacity'] == random_booking['meeting_room']['capacity']
-        assert isinstance(all_bookings_after_filtering[0]['meeting_room']['capacity'], int)
+        bookings_after_filtering = filter_instance.all_my_bookings
+        assert bookings_after_filtering is not None
+        assert bookings_after_filtering[0]['id'] ==  random_booking['id']
+        assert bookings_after_filtering[0]['meeting_room']['id'] == random_booking['meeting_room']['id']
+        assert bookings_after_filtering[0]['meeting_room']['room_name'] == random_booking['meeting_room']['room_name']
+        assert bookings_after_filtering[0]['meeting_room']['capacity'] == random_booking['meeting_room']['capacity']
+        assert isinstance(bookings_after_filtering[0]['meeting_room']['capacity'], int)
 
     def test_filter_room(self):
         """ Checks if the filtering of room is working"""
