@@ -8,7 +8,6 @@ Purpose: This file handles the AI logic
 
 import json
 import os
-from datetime import datetime
 from dotenv import load_dotenv
 from anthropic import Anthropic
 from room_booking import RoomBooking
