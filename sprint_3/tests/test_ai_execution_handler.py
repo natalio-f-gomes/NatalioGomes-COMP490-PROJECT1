@@ -8,7 +8,6 @@ Purpose: This file tests the methods of the ai_execution_handler.py file
 
 import os
 import random
-import pytest
 from ai_execution_handler import FilterLogic
 from room_booking import RoomBooking
 from audio_transcription import transcribe_audio
@@ -104,7 +103,6 @@ class TestAIExecutionHandler:
         :return:
         """
         filter_instance = FilterLogic()
-        all_bookings_before_filtering = filter_instance.all_my_bookings
         valid_prompt = "give me the bookings with the room name of dmf four seven three"
         msg = filter_instance.call_claude_ai(valid_prompt)
         assert msg == {'room_name': 'DMF 473'}
@@ -113,7 +111,6 @@ class TestAIExecutionHandler:
         """ Passes an invalid prompt to AI and then checks
         the list of bookings which should be empty"""
         filter_instance = FilterLogic()
-        all_bookings_before_filtering = filter_instance.all_my_bookings
         invalid_prompt = "give me the bookings with the room name of Albeta"
         response = filter_instance.call_claude_ai(invalid_prompt)
         assert response == {'room_name': 'INVALID_ROOM_NAME'}
