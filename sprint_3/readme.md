@@ -36,12 +36,14 @@
    ```bash
    python -m venv .venv
    source .venv/bin/activate   # On Windows: .venv\Scripts\activate
+   
    ```
 
-5. Install Python dependencies
+5. Upgrade Pip and Install Python dependencies
 
    ```bash
-   pip install -r requirements.txt
+   pip3 install --upgrade pip
+   pip3 install -r requirements.txt
    ```
 
 6. Env Secrets

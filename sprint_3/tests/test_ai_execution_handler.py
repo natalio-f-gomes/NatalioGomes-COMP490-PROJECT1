@@ -106,28 +106,22 @@ class TestAIExecutionHandler:
         filter_instance = FilterLogic()
         all_bookings_before_filtering = filter_instance.all_my_bookings
         valid_prompt = "give me the bookings with the room name of dmf four seven three"
-        filter_instance.call_claude_ai(valid_prompt)
-        all_bookings_after_filtering = filter_instance.all_my_bookings
-        assert all_bookings_before_filtering is not None
-        for booking in all_bookings_after_filtering:
-            assert booking['meeting_room']['room_name'] == "DMF 473"
+        msg = filter_instance.call_claude_ai(valid_prompt)
+        assert msg == {'room_name': 'DMF 473'}
 
     def test_call_claude_ai_with_invalid_room_name(self):
         """ Passes an invalid prompt to AI and then checks
         the list of bookings which should be empty"""
         filter_instance = FilterLogic()
         all_bookings_before_filtering = filter_instance.all_my_bookings
-        invalid_prompt = "give me the bookings with the room name of xyz"
-        filter_instance.call_claude_ai(invalid_prompt)
-        all_bookings_after_filtering = filter_instance.all_my_bookings
-        assert all_bookings_before_filtering is not None
-        assert all_bookings_after_filtering == []
+        invalid_prompt = "give me the bookings with the room name of Albeta"
+        response = filter_instance.call_claude_ai(invalid_prompt)
+        assert response == {'room_name': 'INVALID_ROOM_NAME'}
 
     def test_call_claude_ai_with_empty_prompt(self):
         """Passes an empty prompt to AI to raise a ValueError"""
         filter_instance = FilterLogic()
-        with pytest.raises(ValueError):
-            filter_instance.call_claude_ai("")
+        assert filter_instance.call_claude_ai("") == {}
 
     def test_get_all_reservations_from_audio(self):
         """
@@ -153,5 +147,5 @@ class TestAIExecutionHandler:
         transcription = transcribe_audio(audio_path)
         assert transcription == "get my booking with the idea of ten thousand execute terminate"
         filter_instance = FilterLogic()
-        filter_instance.call_claude_ai(transcription)
-        assert filter_instance.all_my_bookings == []
+        response = filter_instance.call_claude_ai(transcription)
+        assert response == {}

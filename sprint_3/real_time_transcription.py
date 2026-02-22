@@ -37,6 +37,7 @@ class RealTimeTranscription:
         self.exit_command = "terminate"
         self.execution_command = "execute"
         self.all_transcriptions = []
+        self.user_prompt_lst = []
 
     def put_audio_in_the_queue(
             self,
@@ -112,11 +113,13 @@ class RealTimeTranscription:
         if user_prompt:
             print(f"User Prompt:\t{user_prompt}")
             self.all_transcriptions.append(user_prompt)
+            self.user_prompt_lst.append(user_prompt)
 
-        full_user_query = " ".join(self.all_transcriptions)
+        full_user_query = " ".join(self.user_prompt_lst)
         full_user_query = full_user_query[:full_user_query.rfind(self.execution_command)].strip()
         full_user_query = full_user_query.replace(self.execution_command, "")
-        instance.call_claude_ai(full_user_query)
+        instance.call_ai_model(full_user_query)
+        self.user_prompt_lst = []
 
 
     def close_audio_capture(self, audio_stream: object, audio_blocks: list[numpy.ndarray],
@@ -137,6 +140,7 @@ class RealTimeTranscription:
         if final_text:
             print(f"Transcript:   {final_text}")
             self.all_transcriptions.append(final_text)
+            self.user_prompt_lst.append(final_text)
         if exit_program:
             self.put_recording_blocks_together(audio_blocks)
 
@@ -175,6 +179,7 @@ class RealTimeTranscription:
                         if text:
                             print(f"Transcript:   {text}")
                             self.all_transcriptions.append(text)
+                            self.user_prompt_lst.append(text)
                         if self.execution_command in text:
                             self.execute_user_prompt()
                     else:
