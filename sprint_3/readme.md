@@ -67,7 +67,7 @@ Notes: The DisplayDataInTerminal located in the display_data.py exists to quickl
 8. Running Tests
 
 ```bash
-python -m pytest/tests/*
+python3 -m pytest tests/*
 ```
 
 9. Running GitHub Actions Workflows
