@@ -128,7 +128,9 @@ class FilterLogic:
                 print("There was no result that matches your prompt. Please try again")
                 return
             if "list_all_bookings" in data:
-                print(self.all_my_bookings)
+                print("RESULT: ")
+                for i in self.all_my_bookings:
+                    print(i)
                 return
             result = self.filter_by_ai_data(data)
             print("RESULT: ")
