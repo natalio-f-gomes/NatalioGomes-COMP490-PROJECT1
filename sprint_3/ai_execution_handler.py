@@ -121,18 +121,15 @@ class FilterLogic:
             print(f"There was a problem with your prompt. {e}\nPlease try again.")
             return None
 
-    def call_ai_model(self, prompt: str):
+    def display_data_in_terminal(self, data: dict) -> None:
         """
-        takes in the prompt and calls the LLM that we are currently using
+        Responsible for getting the data and displaying it in the terminal
         """
-        data = self.call_claude_ai(prompt)
-        print(f"DATA returned: {data}")
         if data == {}:
             print("There was no result that matches your prompt. Please try again")
             return
         if "list_all_bookings" in data:
             print("RESULT: ")
-
             print(f"{'=' * 200}")
             for i in self.all_my_bookings:
                 print(i)
@@ -144,3 +141,11 @@ class FilterLogic:
         for room in result:
             print(f"Booking {room}")
         print(f"{'=' * 200}")
+
+    def call_ai_model(self, prompt: str):
+        """
+        takes in the prompt and calls the LLM that we are currently using
+        """
+        data = self.call_claude_ai(prompt)
+        print(f"DATA returned: {data}")
+        self.display_data_in_terminal(data)
