@@ -66,8 +66,11 @@ def get_prompt(room_names: set[str]) -> str:
 
     Examples — follow these output shapes exactly:
 
-    User: "when is my reservation for Room Alpha?"
-    → {{"room_name": "Alpha"}}
+    User: "when is my reservation for Room alpha?"
+    → {{"room_name": "alpha"}}
+    
+    User: "Booking with the idea of (if of) one two three"
+    → {{"booking_id": "123"}}
 
     User: "what rooms are booked on Feb 5?"
     → {{"start_time": "2026-02-05T00:00:00"}}
@@ -81,8 +84,14 @@ def get_prompt(room_names: set[str]) -> str:
     User: "list every meeting room"
     → {{"list_all_rooms": "true"}}
 
-    User: "get my booking with the idea of ten thousand execute terminate"
-    → {{}}
+    User: "get my booking with the id of ten thousand execute"
+    → {{"booking_id": "10000"}}
+    
+    User: "get my room with the id of five execute "
+    → {{"room_id": "5"}}
+    
+    User: "get my room with the capacity of twenty four execute "
+    → {{"capacity": "24"}}
 
     User: "delete everything"
     → {{}}

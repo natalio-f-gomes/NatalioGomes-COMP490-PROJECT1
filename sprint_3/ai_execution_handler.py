@@ -93,7 +93,7 @@ class FilterLogic:
             return raw_message[start:end]
         return raw_message
 
-    def call_claude_ai(self, prompt: str) -> dict:
+    def call_claude_ai(self, prompt: str) -> dict or None:
         """
         Calls Claude AI and give it the prompt and filters the data
         :param prompt: str
@@ -114,28 +114,33 @@ class FilterLogic:
         print(f"raw message: {raw_message}")
         clean_message = self.clean_json_response(raw_message)
         print(f"clean message {clean_message}")
-        data = json.loads(clean_message)
-        return data
+        try:
+            data = json.loads(clean_message)
+            return data
+        except Exception as e:
+            print(f"There was a problem with your prompt. {e}\nPlease try again.")
+            return None
 
     def call_ai_model(self, prompt: str):
         """
         takes in the prompt and calls the LLM that we are currently using
         """
-        try:
-            data = self.call_claude_ai(prompt)
-            print(f"DATA returned: {data}")
-            if data == {}:
-                print("There was no result that matches your prompt. Please try again")
-                return
-            if "list_all_bookings" in data:
-                print("RESULT: ")
-                for i in self.all_my_bookings:
-                    print(i)
-                return
-            result = self.filter_by_ai_data(data)
+        data = self.call_claude_ai(prompt)
+        print(f"DATA returned: {data}")
+        if data == {}:
+            print("There was no result that matches your prompt. Please try again")
+            return
+        if "list_all_bookings" in data:
             print("RESULT: ")
-            for room in result:
-                print(f"Booking {room}")
-        except json.decoder.JSONDecodeError as error:
-            print(f"There was a problem with your prompt. {error}\nPlease try again.")
-            raise
+
+            print(f"{'=' * 200}")
+            for i in self.all_my_bookings:
+                print(i)
+            print(f"{'=' * 200}")
+            return
+        result = self.filter_by_ai_data(data)
+        print(f"There was {len(result)} result(s):")
+        print(f"{'='*200}")
+        for room in result:
+            print(f"Booking {room}")
+        print(f"{'=' * 200}")
