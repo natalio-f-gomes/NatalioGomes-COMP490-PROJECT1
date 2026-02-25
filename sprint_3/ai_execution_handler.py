@@ -117,8 +117,11 @@ class FilterLogic:
         try:
             data = json.loads(clean_message)
             return data
-        except Exception as e:
+        except json.JSONDecodeError as e:
             print(f"There was a problem with your prompt. {e}\nPlease try again.")
+            return None
+        finally:
+            print(f"There was a problem. Please try again.")
             return None
 
     def display_data_in_terminal(self, data: dict) -> None:
