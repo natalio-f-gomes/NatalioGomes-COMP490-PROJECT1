@@ -7,9 +7,9 @@ Purpose: This file handles the AI logic
 """
 
 import json
-import os
 from dotenv import load_dotenv
-from anthropic import Anthropic
+from langchain_anthropic import ChatAnthropic
+from langchain_core.messages import HumanMessage, SystemMessage
 from room_booking import RoomBooking
 from prompt import get_prompt
 
@@ -87,40 +87,33 @@ class FilterLogic:
         :param raw_message:
         :return: str
         """
-        start = raw_message.find("{")
-        end = raw_message.rfind("}") + 1
-        if start != -1 and end > 0:
-            return raw_message[start:end]
-        return raw_message
+        return raw_message.strip().removeprefix("```json").removesuffix("```").strip()
 
     def call_claude_ai(self, prompt: str) -> dict or None:
         """
         Calls Claude AI and give it the prompt and filters the data
+        The ChatAnthropic reads ANTHROPIC_API_KEY from os.environ by default
         :param prompt: str
         :return: None
         """
-        print(f"Prompt {prompt}")
-        client = Anthropic(api_key=os.getenv("CLAUDE_API_KEY"))
-        message = client.messages.create(
-            model="claude-sonnet-4-5-20250929",
-            max_tokens=1024,
-            messages=[
-                {"role": "user", "content": f""" {self.get_content()}
-                Prompt: {prompt}
-                """}
-            ]
-        )
-        raw_message = message.content[0].text
-        print(f"raw message: {raw_message}")
-        clean_message = self.clean_json_response(raw_message)
-        print(f"clean message {clean_message}")
+        llm = ChatAnthropic(model="claude-sonnet-4-5-20250929")
+        messages = [
+            SystemMessage(content=self.get_content()),
+            HumanMessage(content=prompt),
+        ]
+        response = llm.invoke(messages)
+        print(f"DEBUG: Response Returned {response}")
+        raw = response.content
+        print(f"DEBUG: Raw Message Returned {raw}")
+        cleaned = self.clean_json_response(raw)
+        print(f"DEBUG: Cleaned Returned {cleaned}")
         try:
-            data = json.loads(clean_message)
+            data = json.loads(cleaned)
+            print(f"DEBUG: Data Json {data}")
             return data
         except json.JSONDecodeError as e:
             print(f"There was a problem with your prompt. {e}\nPlease try again.")
             return None
-
 
     def display_data_in_terminal(self, data: dict) -> None:
         """
@@ -138,12 +131,12 @@ class FilterLogic:
             return
         result = self.filter_by_ai_data(data)
         print(f"There was {len(result)} result(s):")
-        print(f"{'='*200}")
+        print(f"{'=' * 200}")
         for room in result:
             print(f"Booking {room}")
         print(f"{'=' * 200}")
 
-    def call_ai_model(self, prompt: str):
+    def call_ai_agentic_builder(self, prompt: str):
         """
         takes in the prompt and calls the LLM that we are currently using
         """

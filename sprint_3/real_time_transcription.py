@@ -118,7 +118,7 @@ class RealTimeTranscription:
         full_user_query = " ".join(self.user_prompt_lst)
         full_user_query = full_user_query[:full_user_query.rfind(self.execution_command)].strip()
         full_user_query = full_user_query.replace(self.execution_command, "")
-        instance.call_ai_model(full_user_query)
+        instance.call_ai_agentic_builder(full_user_query)
         self.user_prompt_lst = []
 
 
