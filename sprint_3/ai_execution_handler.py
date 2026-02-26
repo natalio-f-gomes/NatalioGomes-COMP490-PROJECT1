@@ -126,6 +126,7 @@ class FilterLogic:
             except json.JSONDecodeError as e:
                 print(f"There was a problem with your prompt. {e}\nPlease try again.")
                 return None
+        return None
 
     def display_data_in_terminal(self, data: dict) -> None:
         """
