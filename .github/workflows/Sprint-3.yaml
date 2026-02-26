@@ -167,7 +167,7 @@ jobs:
           SERVER_PORT: ${{ secrets.SERVER_PORT }}
           EMAIL: ${{ secrets.EMAIL }}
           PASSWORD: ${{ secrets.PASSWORD }}
-          CLAUDE_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           pwd
           cd sprint_3

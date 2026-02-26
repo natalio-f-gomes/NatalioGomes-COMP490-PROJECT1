@@ -68,7 +68,6 @@ class FilterLogic:
        :param value:
        :return: None
        """
-
         self.all_my_bookings = [i for i in self.all_my_bookings
                                 if i['meeting_room'].get(key) == value]
 
