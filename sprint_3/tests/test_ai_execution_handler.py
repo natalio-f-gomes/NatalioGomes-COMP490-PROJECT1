@@ -21,6 +21,7 @@ class TestAIExecutionHandler:
     """
     Tests the required methods of sprint 3
     """
+
     def test_filter_booking(self):
         """ Checks if the filtering of bookings is working"""
         filter_instance = FilterLogic()
@@ -30,7 +31,7 @@ class TestAIExecutionHandler:
         filter_instance.filter_booking('id', random_booking['id'])
         bookings_after_filtering = filter_instance.all_my_bookings
         assert bookings_after_filtering is not None
-        assert bookings_after_filtering[0]['id'] ==  random_booking['id']
+        assert bookings_after_filtering[0]['id'] == random_booking['id']
         assert bookings_after_filtering[0]['meeting_room']['id'] == random_booking['meeting_room']['id']
         assert bookings_after_filtering[0]['meeting_room']['room_name'] == random_booking['meeting_room']['room_name']
         assert bookings_after_filtering[0]['meeting_room']['capacity'] == random_booking['meeting_room']['capacity']
@@ -121,7 +122,7 @@ class TestAIExecutionHandler:
         """Passes an empty prompt to AI to raise a ValueError"""
         filter_instance = FilterLogic()
         with pytest.raises(anthropic.BadRequestError):
-             filter_instance.call_claude_ai("")
+            filter_instance.call_claude_ai("")
 
     def test_get_all_reservations_from_audio(self):
         """
@@ -143,7 +144,7 @@ class TestAIExecutionHandler:
         :return: None
         """
         audio_path = os.path.join(TEST_DIR, "test_recording", "2026_02_21_15_15_37_006809",
-                                    "audio.wav")
+                                  "audio.wav")
         transcription = transcribe_audio(audio_path)
         assert transcription == "get my booking with the idea of ten thousand execute terminate"
         filter_instance = FilterLogic()
