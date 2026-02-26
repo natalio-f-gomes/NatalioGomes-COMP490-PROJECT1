@@ -7,6 +7,8 @@ Purpose: This file handles the AI logic
 """
 
 import json
+
+import anthropic
 from dotenv import load_dotenv
 from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -87,7 +89,11 @@ class FilterLogic:
         :param raw_message:
         :return: str
         """
-        return raw_message.strip().removeprefix("```json").removesuffix("```").strip()
+        start = raw_message.find("{")
+        end = raw_message.rfind("}") + 1
+        if start != -1 and end > 0:
+            return raw_message[start:end]
+        return raw_message
 
     def call_claude_ai(self, prompt: str) -> dict or None:
         """
@@ -97,23 +103,29 @@ class FilterLogic:
         :return: None
         """
         llm = ChatAnthropic(model="claude-sonnet-4-5-20250929")
-        messages = [
-            SystemMessage(content=self.get_content()),
-            HumanMessage(content=prompt),
-        ]
-        response = llm.invoke(messages)
-        print(f"DEBUG: Response Returned {response}")
-        raw = response.content
-        print(f"DEBUG: Raw Message Returned {raw}")
-        cleaned = self.clean_json_response(raw)
-        print(f"DEBUG: Cleaned Returned {cleaned}")
+        messages = None
         try:
-            data = json.loads(cleaned)
-            print(f"DEBUG: Data Json {data}")
-            return data
-        except json.JSONDecodeError as e:
-            print(f"There was a problem with your prompt. {e}\nPlease try again.")
-            return None
+            messages = [
+                SystemMessage(content=self.get_content()),
+                HumanMessage(content=prompt),
+            ]
+        except anthropic.BadRequestError as e:
+            print(f"The prompt cannot be empty {e}")
+
+        if messages:
+            response = llm.invoke(messages)
+            print(f"DEBUG: Response Returned {response}")
+            raw = response.content
+            print(f"DEBUG: Raw Message Returned {raw}")
+            cleaned = self.clean_json_response(raw)
+            print(f"DEBUG: Cleaned Returned {cleaned}")
+            try:
+                data = json.loads(cleaned)
+                print(f"DEBUG: Data Json {data}")
+                return data
+            except json.JSONDecodeError as e:
+                print(f"There was a problem with your prompt. {e}\nPlease try again.")
+                return None
 
     def display_data_in_terminal(self, data: dict) -> None:
         """

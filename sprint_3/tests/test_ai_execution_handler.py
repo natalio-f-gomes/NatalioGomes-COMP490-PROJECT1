@@ -8,6 +8,8 @@ Purpose: This file tests the methods of the ai_execution_handler.py file
 
 import os
 import random
+import anthropic
+import pytest
 from ai_execution_handler import FilterLogic
 from room_booking import RoomBooking
 from audio_transcription import transcribe_audio
@@ -118,7 +120,8 @@ class TestAIExecutionHandler:
     def test_call_claude_ai_with_empty_prompt(self):
         """Passes an empty prompt to AI to raise a ValueError"""
         filter_instance = FilterLogic()
-        assert filter_instance.call_claude_ai("") == {}
+        with pytest.raises(anthropic.BadRequestError):
+             filter_instance.call_claude_ai("")
 
     def test_get_all_reservations_from_audio(self):
         """
@@ -145,6 +148,4 @@ class TestAIExecutionHandler:
         assert transcription == "get my booking with the idea of ten thousand execute terminate"
         filter_instance = FilterLogic()
         response = filter_instance.call_claude_ai(transcription)
-        assert response == {}
-
-
+        assert response == {'booking_id': '10000'}
