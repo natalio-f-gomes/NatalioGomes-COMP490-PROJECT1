@@ -8,6 +8,7 @@ Purpose: This file tests the methods of the ai_execution_handler.py file
 
 import os
 import random
+from datetime import datetime
 import anthropic
 import pytest
 from ai_execution_handler import FilterLogic
@@ -106,9 +107,20 @@ class TestAIExecutionHandler:
         :return:
         """
         filter_instance = FilterLogic()
-        valid_prompt = "give me the bookings with the room name of dmf four seven three"
-        msg = filter_instance.call_claude_ai(valid_prompt)
-        assert msg == {'room_name': 'DMF 473'}
+        valid_prompt_1 = "give me the bookings with the room name of dmf four seven three"
+        valid_prompt_2 = "When is my reservation for Welcome Center206?"
+        valid_prompt_3 = "Do I have a reservation in Room 1 today?"
+        valid_prompt_4 = "What rooms are free today  at 11am that have at least 6 seats."
+        start_time_1 = f"{datetime.now().year}-{datetime.now().month:02d}-{datetime.now().day}T00:00:00"
+        start_time_2 = f"{datetime.now().year}-{datetime.now().month:02d}-{datetime.now().day}T11:00:00"
+        msg_1 = filter_instance.call_claude_ai(valid_prompt_1)
+        msg_2 = filter_instance.call_claude_ai(valid_prompt_2)
+        msg_3 = filter_instance.call_claude_ai(valid_prompt_3)
+        msg_4 = filter_instance.call_claude_ai(valid_prompt_4)
+        assert msg_1 == {'room_name': 'DMF 473'}
+        assert msg_2 == {'room_name': 'Welcome Center 206'}
+        assert msg_3 == {'room_name': 'INVALID_ROOM_NAME', 'start_time': start_time_1}
+        assert msg_4 == {'capacity': '6', 'start_time': start_time_2}
 
     def test_call_claude_ai_with_invalid_room_name(self):
         """ Passes an invalid prompt to AI and then checks
