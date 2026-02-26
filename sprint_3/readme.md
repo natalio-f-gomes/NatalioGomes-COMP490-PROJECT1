@@ -47,7 +47,10 @@
    ```
 
 6. Env Secrets
+
 Create a (.env) located inside sprint_3 dir and fill the secrets.
+
+By the way, ChatAnthropic looks ANTHROPIC_API_KEY on the os.env project root
 
 ```bash
 EMAIL=

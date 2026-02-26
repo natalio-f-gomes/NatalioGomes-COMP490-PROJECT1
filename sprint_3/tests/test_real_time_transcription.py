@@ -82,3 +82,8 @@ class TestApp:
         instance = RealTimeTranscription()
         filename = instance.get_audio_location(array_final, fake_time)
         assert filename == f"recording/{fake_time}/audio.wav"
+
+    def test_record(self):
+        instance = RealTimeTranscription()
+        instance.all_transcriptions = ["give me all", " of the bookings", " execute", "terminate"]
+        assert instance.record() == "give me all of the bookings execute"
