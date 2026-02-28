@@ -41,7 +41,7 @@
    pip install -r requirements.txt
    ```
 6. Env Secrets
-Create a (.env) located inside sprint_2 dir and fill the secrets. By the way, the server address should not have a ":" and the end. And the port address should not have a "/" at the end.
+Create a (.env) located inside sprint_2 dir and fill the secrets. By the way, the server address should not have a ":" at the end. And the port address should not have a "/" at the end.
 
 ```bash
 EMAIL=
