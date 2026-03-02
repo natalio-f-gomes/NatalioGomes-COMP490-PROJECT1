@@ -6,7 +6,6 @@ File: app.py
 Purpose: Puts everything together
 """
 
-
 from real_time_transcription import RealTimeTranscription
 
 

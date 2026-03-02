@@ -27,6 +27,7 @@ class TestAIExecutionHandler:
         """ Checks if the filtering of bookings is working"""
         filter_instance = FilterLogic()
         all_bookings_before_filtering = filter_instance.all_my_bookings
+        print(all_bookings_before_filtering)
         assert all_bookings_before_filtering is not None
         random_booking = all_bookings_before_filtering[random.randint(0, len(all_bookings_before_filtering) - 1)]
         filter_instance.filter_booking('id', random_booking['id'])
@@ -111,8 +112,8 @@ class TestAIExecutionHandler:
         valid_prompt_2 = "When is my reservation for Welcome Center206?"
         valid_prompt_3 = "Do I have a reservation in Room 1 today?"
         valid_prompt_4 = "What rooms are free today  at 11am that have at least 6 seats."
-        start_time_1 = f"{datetime.now().year}-{datetime.now().month:02d}-{datetime.now().day}T00:00:00"
-        start_time_2 = f"{datetime.now().year}-{datetime.now().month:02d}-{datetime.now().day}T11:00:00"
+        start_time_1 = f"{datetime.now().year}-{datetime.now().month:02d}-{datetime.now().day:02d}T00:00:00"
+        start_time_2 = f"{datetime.now().year}-{datetime.now().month:02d}-{datetime.now().day:02d}T11:00:00"
         msg_1 = filter_instance.call_claude_ai(valid_prompt_1)
         msg_2 = filter_instance.call_claude_ai(valid_prompt_2)
         msg_3 = filter_instance.call_claude_ai(valid_prompt_3)

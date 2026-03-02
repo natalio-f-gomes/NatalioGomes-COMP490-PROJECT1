@@ -25,6 +25,7 @@ jobs:
           pip install pylint pytest
           pip install -r requirements.txt
           pip install pylint-venv
+
           pwd
 
       - name: Lint with pylint

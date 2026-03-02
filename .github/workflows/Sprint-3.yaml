@@ -25,9 +25,11 @@ jobs:
         run: |
           python --version
           python -m pip install --upgrade pip
+          echo "::group::Install Dependecies"
           pip install pylint pytest
           pip install -r requirements.txt
           pip install pylint-venv
+          echo "::endgroup::"
           pwd
 
       - name: Install system requirements
@@ -76,10 +78,12 @@ jobs:
         run: |
           sudo apt-get update
           python --version
+          echo "::group::Install Dependencies"
           python -m pip install --upgrade pip
           pip install pylint pytest
           pip install -r requirements.txt
           pip install pylint-venv
+          echo "::endgroup::"
           pwd
 
       - name: Lint with pylint
