@@ -2,13 +2,14 @@ import os
 from tkinter import Image
 from PIL import Image
 import customtkinter
-import tkinter.ttk as ttk
 from database_handler import DatabaseHandler
 
 class UserInterface:
     width = 1000
     height = 700
     def __init__(self):
+        self.room_to_be_updated = None
+        self.update_room_frame = None
         self.database_instance = DatabaseHandler()
         self.all_rooms = self.database_instance.get_all_rooms()
         self.new_room_frame = None
@@ -75,25 +76,55 @@ class UserInterface:
             btn_frame.grid(row=i, column=4, padx=5, pady=5)
 
             customtkinter.CTkButton(btn_frame, text="Update", width=70,
-                                    command=lambda r=row: self.update_room(r)).pack(side="left", padx=2)
+                                    command=lambda r=row: self.navigate_to_update_room(r)).pack(side="left", padx=2)
             customtkinter.CTkButton(btn_frame, text="Delete", width=70, fg_color="red", hover_color="#8b0000",
-                                    command=lambda r=row: self.delete_room(r)).pack(side="left", padx=2)
+                                    command=lambda r=row: self.confirm_delete(r)).pack(side="left", padx=2)
 
-    def delete_room(self, row):
-        print(f"Delete: {row}")
-        self.database_instance.delete_room_by_id(row[0])
+    def confirm_room_deletion(self, message, on_confirm):
+        popup = customtkinter.CTkToplevel(self.app)
+        popup.title("Confirm")
+        popup.geometry("300x150")
+        popup.resizable(False, False)
+
+        label = customtkinter.CTkLabel(popup, text=message,
+                                       font=customtkinter.CTkFont(size=14))
+        label.pack(pady=20)
+
+        btn_frame = customtkinter.CTkFrame(popup, fg_color="transparent")
+        btn_frame.pack(pady=10)
+
+        customtkinter.CTkButton(btn_frame, text="Confirm", width=100,
+                                command=lambda: [on_confirm(), popup.destroy()]).pack(side="left", padx=10)
+        customtkinter.CTkButton(btn_frame, text="Cancel", width=100, fg_color="grey",
+                                command=popup.destroy).pack(side="left", padx=10)
+
+    def confirm_delete(self, room):
+        self.confirm_room_deletion(
+            f"You would Like to Delete Room {room[0]}?",
+            on_confirm = lambda: self.delete_room(room)
+        )
+
+    def delete_room(self, room):
+        print(f"Delete: {room}")
+        self.database_instance.delete_room_by_id(room[0])
         self.all_rooms = self.database_instance.get_all_rooms()
         self.main_frame.grid_forget()
         self.load_main_frame()
         self.main_frame.grid(row=0, column=0, sticky="ns")
 
 
-    def update_room(self, row):
-        print(f"Update: {row}")
+    def navigate_to_update_room(self, room):
+        print(f"Update: {room}")
+        self.room_to_be_updated = room
+        self.main_frame.grid_forget()
+        self.load_update_room_frame()
+        self.update_room_frame.grid(row=0, column=0, sticky="nsew")
 
 
     def sanitize_data(self,room_name, capacity, is_active):
         symbols = """`~!@#$%^&*()_+{}[];:'",<.>/?|\\"""
+        if room_name == "" or capacity == "":
+            return None
         for letter in room_name:
             if letter in symbols:
                 self.valid_room_name = False
@@ -109,16 +140,19 @@ class UserInterface:
         self.valid_room_name = True
         return room_name, capacity, is_active
 
+    def reload_main_frame(self, old_frame):
+        self.all_rooms = self.database_instance.get_all_rooms()
+        old_frame.grid_forget()
+        self.main_frame.grid_forget()
+        self.load_main_frame()
+        self.main_frame.grid(row=0, column=0, sticky="ns")
+
     def add_new_room(self, room_name, room_capacity, is_room_active):
         try:
             room_name, capacity, is_active = self.sanitize_data(room_name, room_capacity, bool(is_room_active))
             print(room_name, capacity, is_active)
             self.database_instance.add_new_room(room_name, capacity, is_room_active)
-            self.all_rooms = self.database_instance.get_all_rooms()
-            self.new_room_frame.grid_forget()
-            self.main_frame.grid_forget()
-            self.load_main_frame()
-            self.main_frame.grid(row=0, column=0, sticky="ns")
+            self.reload_main_frame(self.new_room_frame)
 
         except ValueError:
             message = ("Not all fields were properly filled.\n"
@@ -137,6 +171,20 @@ class UserInterface:
 
         ok_button = customtkinter.CTkButton(popup, text="OK", command=popup.destroy, width=100)
         ok_button.pack()
+
+    def update_room(self,room_id, new_name, new_capacity, is_room_active):
+        try:
+            room_name, capacity, is_active = self.sanitize_data(new_name, new_capacity, bool(is_room_active))
+            print(room_name, capacity, is_active)
+            self.database_instance.update_room(room_id, room_name, capacity, is_room_active)
+            self.reload_main_frame(self.update_room_frame)
+
+        except TypeError or ValueError:
+            message = ("Not all fields were properly filled.\n"
+                       "Room Name cannot be empty and the capacity must be a valid Integer")
+            self.show_warning(message)
+            return False
+
 
     def add_new_room_navigator(self):
         self.main_frame.grid_forget()
@@ -167,8 +215,51 @@ class UserInterface:
         is_room_active_checkbox = customtkinter.CTkCheckBox(self.new_room_frame, text="")
         is_room_active_checkbox.grid(row=3, column=2,  padx=30, pady=(10, 15))
 
-        add_room_button = customtkinter.CTkButton(self.new_room_frame, command =  lambda: self.add_new_room(room_name_entry.get(), room_capacity_entry.get(), is_room_active_checkbox.get()), text="Add Room" ,width=200)
+        add_room_button = customtkinter.CTkButton(self.new_room_frame, command =
+        lambda: self.add_new_room(room_name_entry.get(), room_capacity_entry.get(),
+                                  is_room_active_checkbox.get()), text="Add Room" ,width=200)
         add_room_button.grid(row=4, column=1, padx=30, pady=(15, 15))
+
+    def load_update_room_frame(self):
+        self.update_room_frame = customtkinter.CTkFrame(master=self.app)
+        welcome_label = customtkinter.CTkLabel(self.update_room_frame,
+                text=f"Updating room {self.room_to_be_updated[0]}", font=customtkinter.CTkFont(size=20, weight="bold"))
+        welcome_label.grid(row=0, column=1, padx=30, pady=(100, 15))
+
+
+        update_room_name_label = customtkinter.CTkLabel(self.update_room_frame, text="Room Name",
+                                                  font=customtkinter.CTkFont(size=20, weight="bold"))
+        update_room_name_label.grid(row=1, column=0, padx=30, pady=(10, 15))
+        update_room_name_entry = customtkinter.CTkEntry(self.update_room_frame, width=200,
+                                                        placeholder_text=f"{self.room_to_be_updated[1]}")
+        update_room_name_entry.grid(row=1, column=2,  padx=30, pady=(10, 15))
+
+        update_room_capacity_label = customtkinter.CTkLabel(self.update_room_frame, text="Room Capacity",
+                                                  font=customtkinter.CTkFont(size=20, weight="bold"))
+        update_room_capacity_label.grid(row=2, column=0, padx=30, pady=(10, 15))
+        update_room_capacity_entry = customtkinter.CTkEntry(self.update_room_frame, width=200,
+                                                            placeholder_text=f"{self.room_to_be_updated[2]}")
+        update_room_capacity_entry.grid(row=2, column=2, padx=30, pady=(10, 15))
+
+        is_room_active_label = customtkinter.CTkLabel(self.update_room_frame, text="Is Room Active ?",
+                                                     font=customtkinter.CTkFont(size=20, weight="bold"))
+        is_room_active_label.grid(row=3, column=0, padx=30, pady=(10, 15))
+        is_room_active_checkbox = customtkinter.CTkCheckBox(self.update_room_frame, text="")
+        is_room_active_checkbox.grid(row=3, column=2,  padx=30, pady=(10, 15))
+
+        room_name = update_room_name_entry.get()
+        room_capacity = update_room_capacity_entry.get()
+        if room_name == "":
+            room_name = self.room_to_be_updated[1]
+        if room_capacity == "":
+            room_capacity = self.room_to_be_updated[2]
+        update_room_button = customtkinter.CTkButton(self.update_room_frame, command =  lambda:
+                self.update_room(self.room_to_be_updated[0], update_room_name_entry.get(),
+                                  update_room_capacity_entry.get(),
+                                  is_room_active_checkbox.get()),
+                                    text="Update Room" ,width=200)
+
+        update_room_button.grid(row=4, column=1, padx=30, pady=(15, 15))
 
     def load_welcome_frame(self):
         self.welcome_frame = customtkinter.CTkFrame(self.app, corner_radius=0)
