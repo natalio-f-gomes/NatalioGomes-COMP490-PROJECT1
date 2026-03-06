@@ -5,12 +5,10 @@ import customtkinter
 import tkinter.ttk as ttk
 from database_handler import DatabaseHandler
 
-class UserInterface():
+class UserInterface:
     width = 1000
     height = 700
-
     def __init__(self):
-        self.loading_label = None
         self.database_instance = DatabaseHandler()
         self.all_rooms = self.database_instance.get_all_rooms()
         self.new_room_frame = None
@@ -48,10 +46,6 @@ class UserInterface():
         table_frame = customtkinter.CTkScrollableFrame(master=self.main_frame, width=800, height=400)
         table_frame.grid(row=3, column=0, padx=20, pady=20, sticky="nsew")
 
-
-        self.loading_label = customtkinter.CTkLabel(table_frame, text="Loading...")
-        self.loading_label.grid(row=1, column=0)
-
         for i, col in enumerate(["ID", "Name", "Capacity", "Is Active?", "Options"]):
             table_frame.grid_columnconfigure(i, weight=1)
             header = customtkinter.CTkLabel(table_frame, text=col,
@@ -81,15 +75,20 @@ class UserInterface():
             btn_frame.grid(row=i, column=4, padx=5, pady=5)
 
             customtkinter.CTkButton(btn_frame, text="Update", width=70,
-                                    command=lambda r=row: self.update_event(r)).pack(side="left", padx=2)
+                                    command=lambda r=row: self.update_room(r)).pack(side="left", padx=2)
             customtkinter.CTkButton(btn_frame, text="Delete", width=70, fg_color="red", hover_color="#8b0000",
-                                    command=lambda r=row: self.delete_event(r)).pack(side="left", padx=2)
+                                    command=lambda r=row: self.delete_room(r)).pack(side="left", padx=2)
 
-    def delete_event(self, row):
+    def delete_room(self, row):
         print(f"Delete: {row}")
+        self.database_instance.delete_room_by_id(row[0])
+        self.all_rooms = self.database_instance.get_all_rooms()
+        self.main_frame.grid_forget()
+        self.load_main_frame()
+        self.main_frame.grid(row=0, column=0, sticky="ns")
 
 
-    def update_event(self, row):
+    def update_room(self, row):
         print(f"Update: {row}")
 
 
@@ -133,13 +132,11 @@ class UserInterface():
         popup.geometry("500x150")
         popup.resizable(False, False)
 
-
         label = customtkinter.CTkLabel(popup, text=message, font=customtkinter.CTkFont(size=14))
         label.pack(pady=30)
 
         ok_button = customtkinter.CTkButton(popup, text="OK", command=popup.destroy, width=100)
         ok_button.pack()
-
 
     def add_new_room_navigator(self):
         self.main_frame.grid_forget()
@@ -173,10 +170,6 @@ class UserInterface():
         add_room_button = customtkinter.CTkButton(self.new_room_frame, command =  lambda: self.add_new_room(room_name_entry.get(), room_capacity_entry.get(), is_room_active_checkbox.get()), text="Add Room" ,width=200)
         add_room_button.grid(row=4, column=1, padx=30, pady=(15, 15))
 
-
-
-
-
     def load_welcome_frame(self):
         self.welcome_frame = customtkinter.CTkFrame(self.app, corner_radius=0)
         self.welcome_frame.grid(row=0, column=0, sticky="ns")
@@ -188,14 +181,11 @@ class UserInterface():
         load_main_frame_button = customtkinter.CTkButton(self.welcome_frame, text="Get Started", command = self.welcome_button ,width=200)
         load_main_frame_button.grid(row=3, column=0, padx=30, pady=(15, 15))
 
-
     def welcome_button(self):
         print(f"Welcome {self.username_entry.get()}")
         self.welcome_frame.grid_forget()
         self.load_main_frame()
         self.main_frame.grid(row=0, column=0, sticky="nsew")
-
-
 
     def run(self):
         self.load_background_image()
