@@ -2,17 +2,22 @@ import os
 from tkinter import Image
 from PIL import Image
 import customtkinter
-
+import tkinter.ttk as ttk
+from database_handler import DatabaseHandler
 
 class UserInterface():
-    width = 800
-    height = 600
+    width = 1000
+    height = 700
 
     def __init__(self):
+        self.loading_label = None
+        self.database_instance = DatabaseHandler()
+        self.all_rooms = self.database_instance.get_all_rooms()
         self.new_room_frame = None
         self.welcome_frame = None
         self.main_frame = None
         self.username_entry = None
+        self.valid_room_name = None
         customtkinter.set_appearance_mode("System")
         customtkinter.set_default_color_theme("blue")
         self.app = customtkinter.CTk()
@@ -36,10 +41,107 @@ class UserInterface():
         intro_label =customtkinter.CTkLabel(self.main_frame, text = f"List of All rooms",
                                              font=customtkinter.CTkFont(size=20))
         intro_label.grid(row=1, column=0, padx=30, pady=(5, 5))
+        add_new_room_button = customtkinter.CTkButton(self.main_frame, text="Add a new Room" ,command =
+        self.add_new_room_navigator ,width=200)
+        add_new_room_button.grid(row=2, column=0, padx=30, pady=(15, 15))
 
-        add_new_room_button = customtkinter.CTkButton(self.main_frame, text="Add a new Room" ,command = self.add_new_room ,width=200)
-        add_new_room_button.grid(row=3, column=0, padx=30, pady=(15, 15))
-    def add_new_room(self):
+        table_frame = customtkinter.CTkScrollableFrame(master=self.main_frame, width=800, height=400)
+        table_frame.grid(row=3, column=0, padx=20, pady=20, sticky="nsew")
+
+
+        self.loading_label = customtkinter.CTkLabel(table_frame, text="Loading...")
+        self.loading_label.grid(row=1, column=0)
+
+        for i, col in enumerate(["ID", "Name", "Capacity", "Is Active?", "Options"]):
+            table_frame.grid_columnconfigure(i, weight=1)
+            header = customtkinter.CTkLabel(table_frame, text=col,
+                                            font=customtkinter.CTkFont(weight="bold"))
+            header.grid(row=0, column=i, padx=5, pady=5)
+
+        self.fill_table( table_frame)
+
+    def fill_table(self, table_frame):
+        # clear all rows except header
+        for widget in table_frame.winfo_children():
+            if int(widget.grid_info()["row"]) > 0:
+                widget.destroy()
+
+        for i, row in enumerate(self.all_rooms, start=1):
+            room_id, name, capacity, is_active ,= row
+            is_active_display = "True" if is_active == 1 else "False"
+
+            customtkinter.CTkLabel(table_frame, text=room_id).grid(row=i, column=0, padx=5, pady=5)
+            customtkinter.CTkLabel(table_frame, text=name).grid(row=i, column=1, padx=5, pady=5)
+            customtkinter.CTkLabel(table_frame, text=capacity).grid(row=i, column=2, padx=5, pady=5)
+            customtkinter.CTkLabel(table_frame, text=is_active_display).grid(row=i, column=3, padx=5, pady=5)
+            customtkinter.CTkLabel(table_frame, text="Options").grid(row=i, column=4, padx=5, pady=5)
+
+
+            btn_frame = customtkinter.CTkFrame(table_frame, fg_color="transparent")
+            btn_frame.grid(row=i, column=4, padx=5, pady=5)
+
+            customtkinter.CTkButton(btn_frame, text="Update", width=70,
+                                    command=lambda r=row: self.update_event(r)).pack(side="left", padx=2)
+            customtkinter.CTkButton(btn_frame, text="Delete", width=70, fg_color="red", hover_color="#8b0000",
+                                    command=lambda r=row: self.delete_event(r)).pack(side="left", padx=2)
+
+    def delete_event(self, row):
+        print(f"Delete: {row}")
+
+
+    def update_event(self, row):
+        print(f"Update: {row}")
+
+
+    def sanitize_data(self,room_name, capacity, is_active):
+        symbols = """`~!@#$%^&*()_+{}[];:'",<.>/?|\\"""
+        for letter in room_name:
+            if letter in symbols:
+                self.valid_room_name = False
+                return "Invalid room name"
+        try:
+            capacity = int(capacity)
+        except ValueError:
+            self.valid_room_name = False
+            return "Invalid capacity"
+        if type(is_active) != bool:
+            self.valid_room_name = False
+            return "Invalid is_active"
+        self.valid_room_name = True
+        return room_name, capacity, is_active
+
+    def add_new_room(self, room_name, room_capacity, is_room_active):
+        try:
+            room_name, capacity, is_active = self.sanitize_data(room_name, room_capacity, bool(is_room_active))
+            print(room_name, capacity, is_active)
+            self.database_instance.add_new_room(room_name, capacity, is_room_active)
+            self.all_rooms = self.database_instance.get_all_rooms()
+            self.new_room_frame.grid_forget()
+            self.main_frame.grid_forget()
+            self.load_main_frame()
+            self.main_frame.grid(row=0, column=0, sticky="ns")
+
+        except ValueError:
+            message = ("Not all fields were properly filled.\n"
+                       "Room Name cannot be empty and the capacity must be a valid Integer")
+            self.show_warning(message)
+            return False
+
+    def show_warning(self, message):
+        popup = customtkinter.CTkToplevel(self.app)
+        popup.title("Warning")
+        popup.geometry("500x150")
+        popup.resizable(False, False)
+
+
+        label = customtkinter.CTkLabel(popup, text=message, font=customtkinter.CTkFont(size=14))
+        label.pack(pady=30)
+
+        ok_button = customtkinter.CTkButton(popup, text="OK", command=popup.destroy, width=100)
+        ok_button.pack()
+
+
+    def add_new_room_navigator(self):
         self.main_frame.grid_forget()
         self.load_add_room_frame()
         self.new_room_frame.grid(row=0, column=0, sticky="nsew")
@@ -68,8 +170,10 @@ class UserInterface():
         is_room_active_checkbox = customtkinter.CTkCheckBox(self.new_room_frame, text="")
         is_room_active_checkbox.grid(row=3, column=2,  padx=30, pady=(10, 15))
 
-        add_room_button = customtkinter.CTkButton(self.new_room_frame, text="Add Room" ,width=200)
+        add_room_button = customtkinter.CTkButton(self.new_room_frame, command =  lambda: self.add_new_room(room_name_entry.get(), room_capacity_entry.get(), is_room_active_checkbox.get()), text="Add Room" ,width=200)
         add_room_button.grid(row=4, column=1, padx=30, pady=(15, 15))
+
+
 
 
 
