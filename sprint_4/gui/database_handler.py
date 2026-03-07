@@ -35,6 +35,7 @@ class DatabaseHandler:
         self.connection.commit()
 
     def delete_room_by_id(self, room_id):
+        """Delete the booking with the room ID and the room as well"""
         self.cursor.execute("DELETE FROM booking_bookinghistory WHERE meeting_room_id = ?", (room_id,))
         self.cursor.execute("DELETE FROM booking_meetingroom WHERE id = ?", (room_id,))
         self.connection.commit()
