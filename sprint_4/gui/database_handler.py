@@ -6,22 +6,42 @@ File: database_handler.py
 Purpose: This file handles Database CRUD functionalities
 """
 
+from datetime import datetime
 import sqlite3
+from generate_report import GenerateReport
 
 class DatabaseHandler:
-    """
-    Database Handler Class with all necessary methods for sprint_4
-    """
+    """Database Handler Class with all necessary methods for sprint_4"""
     def __init__(self):
         """Initialize the constructor by loading the db"""
         self.connection = sqlite3.connect('db.sqlite3')
-        self.connection.execute("PRAGMA foreign_keys = ON")
         self.cursor = self.connection.cursor()
+        self.generate_report = GenerateReport()
 
     def get_all_rooms(self) -> list[tuple]:
         """Get all rooms"""
         command = """SELECT * FROM booking_meetingroom"""
         return self.cursor.execute(command).fetchall()
+
+    def get_user_by_id(self, user_id: int) -> tuple:
+        """Get room by ID"""
+        sql = "SELECT * FROM member_customuser WHERE id = ?"
+        return self.cursor.execute(sql, (user_id,)).fetchone()
+
+    def get_booking_by_id(self, booking_id: int) -> list[tuple]:
+        """Get room by ID"""
+        sql = "SELECT * FROM booking_bookinghistory WHERE id = ?"
+        return self.cursor.execute(sql, (booking_id,)).fetchall()
+
+    def get_booking_by_room_id(self, room_id: int) -> list[tuple]:
+        """Get room by ID"""
+        sql = "SELECT * FROM booking_bookinghistory WHERE meeting_room_id = ?"
+        return self.cursor.execute(sql, (room_id,)).fetchall()
+
+    def get_booking_by_user_id(self, user_id: int) -> tuple:
+        """Get room by ID"""
+        sql = "SELECT * FROM booking_bookinghistory WHERE booked_by_id = ?"
+        return self.cursor.execute(sql, (user_id,)).fetchall()
 
     def get_room_by_id(self, room_id: int) -> tuple:
         """Get room by ID"""
@@ -34,8 +54,20 @@ class DatabaseHandler:
         self.cursor.execute(sql, (room_name, capacity, int(is_active)))
         self.connection.commit()
 
+
     def delete_room_by_id(self, room_id):
         """Delete the booking with the room ID and the room as well"""
+        bookings_with_the_room_id = self.get_booking_by_room_id(room_id)
+        user_ids = set(x[4] for x in bookings_with_the_room_id)
+        user_booking_data = {}
+        for user_id in user_ids:
+            user_booking_data[user_id] = self.get_booking_by_user_id(user_id)
+        all_users_affected = set()
+        for i in bookings_with_the_room_id:
+            all_users_affected.add(self.get_user_by_id(i[4]))
+
+        print(f"user_booking_data {user_booking_data}")
+        self.generate_report.generate_report(datetime.now(),"DELETE", all_users_affected, bookings_with_the_room_id, user_booking_data)
         self.cursor.execute("DELETE FROM booking_bookinghistory WHERE meeting_room_id = ?", (room_id,))
         self.cursor.execute("DELETE FROM booking_meetingroom WHERE id = ?", (room_id,))
         self.connection.commit()
