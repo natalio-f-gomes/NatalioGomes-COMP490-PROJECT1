@@ -19,7 +19,8 @@ class GenerateReport:
 
     def write_report_to_csv(self) -> None:
         """Checks if the file exists and if not, create it and write the data from all reports to it"""
-        header = ["User ID", "Email", "Username", "Date", "Action", "Room ID", "Reservation IDs Affected", "Total Reservations Affected"]
+        header = ["User ID", "Email", "Username", "Date", "Action", "Room ID", "Reservation IDs Affected",
+                  "Total Reservations Affected"]
         file_exists = os.path.exists("report.csv")
         with open('Report/report.csv', 'a', newline='') as csvfile:
             writer = csv.writer(csvfile)

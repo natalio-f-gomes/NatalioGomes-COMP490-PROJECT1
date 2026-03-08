@@ -14,7 +14,8 @@ class DatabaseHandler:
     """Database Handler Class with all necessary methods for sprint_4"""
     def __init__(self):
         """Initialize the constructor by loading the db"""
-        self.connection = sqlite3.connect('db.sqlite3')
+        self.database_path = 'db.sqlite3'
+        self.connection = sqlite3.connect(self.database_path)
         self.cursor = self.connection.cursor()
         self.generate_report = GenerateReport()
 
@@ -54,9 +55,7 @@ class DatabaseHandler:
         self.cursor.execute(sql, (room_name, capacity, int(is_active)))
         self.connection.commit()
 
-
-    def delete_room_by_id(self, room_id):
-        """Delete the booking with the room ID and the room as well"""
+    def call_report_generator(self, room_id):
         bookings_with_the_room_id = self.get_booking_by_room_id(room_id)
         user_ids = set(x[4] for x in bookings_with_the_room_id)
         user_booking_data = {}
@@ -67,7 +66,12 @@ class DatabaseHandler:
             all_users_affected.add(self.get_user_by_id(i[4]))
 
         print(f"user_booking_data {user_booking_data}")
-        self.generate_report.generate_report(datetime.now(),"DELETE", all_users_affected, bookings_with_the_room_id, user_booking_data)
+        self.generate_report.generate_report(datetime.now(), "DELETE",
+                                             all_users_affected, bookings_with_the_room_id, user_booking_data)
+
+    def delete_room_by_id(self, room_id):
+        """Delete the booking with the room ID and the room as well"""
+        self.call_report_generator(room_id)
         self.cursor.execute("DELETE FROM booking_bookinghistory WHERE meeting_room_id = ?", (room_id,))
         self.cursor.execute("DELETE FROM booking_meetingroom WHERE id = ?", (room_id,))
         self.connection.commit()
