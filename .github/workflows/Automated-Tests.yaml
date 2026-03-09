@@ -305,9 +305,12 @@ jobs:
 
             echo "Running migrations..."
             python3 manage.py migrate
+            
+            echo "enabling port 8000..."
+            sudo ufw allow 8000
           
             echo "Run Server..."
-            python3 manage.py runserver
+            python3 manage.py runserver 0.0.0.0:8000
 
             echo "Done!"
           EOF
