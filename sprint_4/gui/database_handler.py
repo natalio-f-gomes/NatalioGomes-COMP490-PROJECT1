@@ -70,7 +70,7 @@ class DatabaseHandler:
             all_users_affected.add(self.get_user_by_id(i[4]))
 
         print(f"user_booking_data {user_booking_data}")
-        self.generate_report.generate_report(datetime.now(), "DELETE",
+        self.generate_report.generate_report( "DELETE",
                                              all_users_affected, bookings_with_the_room_id, user_booking_data)
 
     def delete_room_by_id(self, room_id):

@@ -46,7 +46,7 @@ class GenerateReport:
                 user_booking_data[i[4]] = 1
         return user_booking_data
 
-    def generate_report(self, date_of_action: datetime, action_type: str, users_affected: set[tuple],
+    def generate_report(self, action_type: str, users_affected: set[tuple],
                         bookings_with_the_room_id: list[tuple] ,user_booking_data: dict) -> None:
         """
         Grabs the data, loops through it, takes the relevant data and adds it to the all_reports list
@@ -58,7 +58,7 @@ class GenerateReport:
         :param user_booking_data: dict
         :return: None
         """
-
+        date_of_action = datetime.now()
         data = self.get_user_booking_data(bookings_with_the_room_id)
         print(f"DEBUG: Bookings with the room id {bookings_with_the_room_id}")
         room_id = bookings_with_the_room_id[0][5]
