@@ -6,7 +6,7 @@ File: database_handler.py
 Purpose: This file handles Database CRUD functionalities
 """
 
-from datetime import datetime
+
 import sqlite3
 from generate_report import GenerateReport
 
