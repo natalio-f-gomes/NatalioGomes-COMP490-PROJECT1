@@ -278,7 +278,7 @@ jobs:
                      -e "ssh -i ~/.ssh/id_ed25519" \
                      ${{ github.workspace }}/sprint_4/RoomBookingServer deploy@${{ secrets.DROPLET_IP_ADDRESS }}:/home/deploy/
 
-      - name: Deploy to DIGITAL Ocean
+      - name: Deploy to DIGITAL OCEAN
         run: |
           ssh -i ~/.ssh/id_ed25519 deploy@${{ secrets.DROPLET_IP_ADDRESS }} << 'EOF'
             echo "Contents:"
@@ -308,9 +308,12 @@ jobs:
             
             echo "enabling port 8000..."
             sudo ufw allow 8000
+            
+            echo "Start and enable Gunicorn"
+            sudo systemctl daemon-reload
+            sudo systemctl start gunicorn
+            sudo systemctl enable gunicorn  
+            sudo systemctl status gunicorn   
           
-            echo "Run Server..."
-            python3 manage.py runserver 0.0.0.0:8000
-
             echo "Done!"
           EOF
