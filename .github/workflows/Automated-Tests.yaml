@@ -1,4 +1,4 @@
-name: Sprint-3 Unit Tests
+name: Project 1 CI CD
 
 on:
   push:
