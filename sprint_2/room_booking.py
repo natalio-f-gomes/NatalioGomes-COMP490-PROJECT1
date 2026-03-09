@@ -32,6 +32,7 @@ class RoomBooking:
         self.api = f"{server_address}:{server_port}/"
         self.authentication_status_code = None
         self.headers = None
+        self.timeout = 10
 
     @handle_request_exceptions
     def authenticate(self) -> None:
