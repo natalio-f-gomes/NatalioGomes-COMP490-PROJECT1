@@ -263,6 +263,9 @@ jobs:
             DITIAL_OCEAN_SSH_KEY: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
             DROPLET_IP: ${{ secrets.DROPLET_IP_ADDRESS }}
         run: |
-          ssh -i ~/.ssh/id_ed25519 deploy@$DROPLET_IP
-          pwd
+          ssh -i ~/.ssh/id_ed25519 deploy@$DROPLET_IP << 'EOF'
+          echo "Running Server: $(pwd)"
+          echo "User: $(whoami)"
+          EOF
+          
 
