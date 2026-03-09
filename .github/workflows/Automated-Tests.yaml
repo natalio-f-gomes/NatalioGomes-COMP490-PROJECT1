@@ -285,12 +285,12 @@ jobs:
           DROPLET_IP: ${{ secrets.DROPLET_IP_ADDRESS }}
         run: |
           echo "SSH into droplet"
-          ssh -i ~/.ssh/id_ed25519 deploy@$DROPLET_IP << 'EOF'
+          ssh -i ~/.ssh/id_ed25519 root@$DROPLET_IP << 'EOF'
           echo "Contents: $(ls -la)"
           echo "CD RoomBookingServer : $(cd RoomBookingServer)"
           echo "Contents of RoomBookingServer: $(ls -la)"
           echo "Installing python" $(sudo apt install python3 python3-pip python3-venv -y)
-          echo "Check Installation" $(python --version)
+          echo "Check Installation" $(python3 --version)
           echo "Create Virtual environment" $(python3 -m venv .venv)
           echo "Activate Virtual environment" $(source .venv/bin/.activate)
           echo "::group:: Install Requirements: $(pip install -r requirements.txt) ::endgroup::"
