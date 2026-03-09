@@ -18,12 +18,14 @@ class GenerateReport:
         self.all_reports = []
 
     def write_report_to_csv(self) -> None:
-        """Checks if the file exists and if not, create it and write the data from all reports to it"""
+        """Checks if the file exists and if it's not empty, create it and write the data from all reports to it"""
         header = ["User ID", "Email", "Username", "Date", "Action", "Room ID", "Reservation IDs Affected",
                   "Total Reservations Affected"]
-        file_exists = os.path.exists("report.csv")
+
         try:
-            with open('Report/report.csv', 'a', newline='', encoding="utf-8") as csvfile:
+            file_path = "Report/report.csv"
+            file_exists = os.path.isfile(file_path) and os.path.getsize(file_path) > 0
+            with open(file_path, 'a', newline='', encoding="utf-8") as csvfile:
                 writer = csv.writer(csvfile)
                 if file_exists:
                     writer.writerows(self.all_reports)
@@ -33,6 +35,7 @@ class GenerateReport:
                 self.all_reports = []
         except FileNotFoundError:
             print("FILE NOT FOUND")
+
 
     @staticmethod
     def get_user_booking_data(bookings_with_the_room_id: list[tuple]) -> dict:
