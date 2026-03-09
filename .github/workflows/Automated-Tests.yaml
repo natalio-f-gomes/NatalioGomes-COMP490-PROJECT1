@@ -61,7 +61,6 @@ jobs:
           python -m pytest -v --tb=long
 
   Sprint-2:
-    needs: Sprint-1
     runs-on: ubuntu-latest
 
     steps:
@@ -113,7 +112,6 @@ jobs:
           
 
   Sprint-3:
-    needs: Sprint-2
     runs-on: ubuntu-latest
 
     steps:
