@@ -278,21 +278,36 @@ jobs:
                      -e "ssh -i ~/.ssh/id_ed25519" \
                      ${{ github.workspace }}/sprint_4/RoomBookingServer deploy@${{ secrets.DROPLET_IP_ADDRESS }}:/home/deploy/
 
-      - name: Set Up Server Inside the Droplet
-        env:
-          PYTHONPATH: ${{ github.workspace }}/sprint_4/Room_booking_server
-          DITIAL_OCEAN_SSH_KEY: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
-          DROPLET_IP: ${{ secrets.DROPLET_IP_ADDRESS }}
+      - name: Deploy to DIGITAL Ocean
         run: |
-          echo "SSH into droplet"
-          ssh -i ~/.ssh/id_ed25519 root@$DROPLET_IP << 'EOF'
-          echo "Contents: $(ls -la)"
-          echo "CD RoomBookingServer : $(cd RoomBookingServer)"
-          echo "Contents of RoomBookingServer: $(ls -la)"
-          echo "Installing python" $(sudo apt install python3 python3-pip python3-venv -y)
-          echo "Check Installation" $(python3 --version)
-          echo "Create Virtual environment" $(python3 -m venv .venv)
-          echo "Activate Virtual environment" $(source .venv/bin/.activate)
-          echo "::group:: Install Requirements: $(pip install -r requirements.txt) ::endgroup::"
-          echo "Starting Server $(python3 manage.py runserver)"
+          ssh -i ~/.ssh/id_ed25519 deploy@${{ secrets.DROPLET_IP_ADDRESS }} << 'EOF'
+            echo "Contents:"
+            ls -la
+
+            echo "Installing Python..."
+            sudo apt update -y
+            sudo apt install python3 python3-pip python3-venv -y
+
+            echo "Python version:"
+            python3 --version
+
+            echo "Project folder..."
+            cd RoomBookingServer
+
+            echo "Creating virtual environment..."
+            python3 -m venv .venv
+
+            echo "Activating virtual environment..."
+            source .venv/bin/activate
+
+            echo "Installing requirements..."
+            pip install -r requirements.txt
+
+            echo "Running migrations..."
+            python3 manage.py migrate
+          
+            echo "Run Server..."
+            python3 manage.py runserver
+
+            echo "Done!"
           EOF
