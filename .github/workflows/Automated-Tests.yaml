@@ -257,7 +257,7 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H ${{ secrets.DROPLET_IP_ADDRESS }} >> ~/.ssh/known_hosts
 
-      - name: Deploy to Digital Ocean
+      - name: Connect to Digital Ocean Droplet
         env:
             PYTHONPATH: ${{ github.workspace }}/sprint_4/Room_booking_serve
             DITIAL_OCEAN_SSH_KEY: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
@@ -266,6 +266,11 @@ jobs:
           ssh -i ~/.ssh/id_ed25519 deploy@$DROPLET_IP << 'EOF'
           echo "Running Server: $(pwd)"
           echo "User: $(whoami)"
+          echo "Server IP address: $(hostname -I)"
           EOF
-          
 
+      - name: Deploy Server to Digital Ocean
+        env:
+            DROPLET_IP: ${{ secrets.DROPLET_IP_ADDRESS }}
+        run: |
+          rsync -avz /sprint_4/RoomBookingServer deploy@$DROPLET_IP
