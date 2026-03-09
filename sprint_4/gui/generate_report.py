@@ -54,7 +54,6 @@ class GenerateReport:
         """
         Grabs the data, loops through it, takes the relevant data and adds it to the all_reports list
         and then calls the write_report_to_csv method
-        :param date_of_action: datetime
         :param action_type: str
         :param users_affected: set[tuple]
         :param bookings_with_the_room_id:  list[tuple]

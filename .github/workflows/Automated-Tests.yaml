@@ -310,7 +310,6 @@ jobs:
             --max-line-length=120 \
             --disable=W0613,W0621,R0902,C0301
 
-
       - name: Run Unit Tests
         env:
           PYTHONPATH: ${{ github.workspace }}/sprint_4/gui
@@ -319,4 +318,3 @@ jobs:
           cd sprint_4/gui
           ls -la
           python -m pytest tests/*
-
