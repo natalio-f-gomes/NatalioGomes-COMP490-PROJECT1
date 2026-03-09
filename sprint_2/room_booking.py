@@ -46,7 +46,7 @@ class RoomBooking:
             "email": self.email,
             "password": self.password
         }
-        response = requests.post(f"{self.api}{endpoint}", json=user_credentials, timeout=5)
+        response = requests.post(f"{self.api}{endpoint}", json=user_credentials, timeout=self.timeout)
         self.authentication_status_code = response.status_code
         # self.refresh_token = response.json()['token']['refresh']
         access_token = response.json()['token']['access']
@@ -61,7 +61,7 @@ class RoomBooking:
         """
         endpoint = "/api/v1/meeting-rooms/available/"
 
-        rooms = requests.get(f"{self.api}/{endpoint}", headers=self.headers, timeout=2)
+        rooms = requests.get(f"{self.api}/{endpoint}", headers=self.headers, timeout=self.timeout)
         return rooms.json()
 
     @handle_request_exceptions
@@ -76,7 +76,7 @@ class RoomBooking:
             "start_time": start_time,
             "end_time": end_time,
         }
-        response = requests.post(endpoint, headers=self.headers, json=booking_time, timeout=2)
+        response = requests.post(endpoint, headers=self.headers, json=booking_time, timeout=self.timeout)
         print(response.json())
         return response.json()
 
@@ -88,7 +88,7 @@ class RoomBooking:
         :return:
         """
         endpoint = f"{self.api}/api/v1/meeting-rooms/my-bookings/"
-        response = requests.get(endpoint, headers=self.headers, timeout=2)
+        response = requests.get(endpoint, headers=self.headers, timeout=self.timeout)
         return response.json()
 
     @handle_request_exceptions
@@ -100,7 +100,7 @@ class RoomBooking:
         :return: json or None
         """
         endpoint = f"{self.api}/api/v1/meeting-rooms/{booking_id}/cancel-booking/"
-        response = requests.delete(endpoint, headers=self.headers, timeout=2)
+        response = requests.delete(endpoint, headers=self.headers, timeout=self.timeout)
         if response.status_code == 204:
             return {"success": True}
         if response.text:
