@@ -60,7 +60,104 @@ jobs:
           ls -la
           python -m pytest -v --tb=long
 
+  Sprint-4-Deploy-Server:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        working-directory: sprint_4/RoomBookingServer
+        run: |
+          sudo apt-get update
+          python --version
+          echo "::group:: Install dependencies"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          echo "::endgroup::"
+          pwd
+
+      - name: Debug env vars
+        run: |
+          echo "SSH KEY is set: ${{ secrets.DIGITAL_OCEAN_SSH_KEY != '' }}"
+          echo "IPADDRESS: ${{ secrets.DROPLET_IP_ADDRESS != '' }}"
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DIGITAL_OCEAN_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.DROPLET_IP_ADDRESS }} >> ~/.ssh/known_hosts
+
+      - name: Connect to Digital Ocean Droplet
+        env:
+            PYTHONPATH: ${{ github.workspace }}/sprint_4/Room_booking_serve
+            DITIAL_OCEAN_SSH_KEY: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
+            DROPLET_IP: ${{ secrets.DROPLET_IP_ADDRESS }}
+        run: |
+          ssh -i ~/.ssh/id_ed25519 deploy@$DROPLET_IP << 'EOF'
+          echo "Running Server: $(pwd)"
+          echo "User: $(whoami)"
+          echo "Server IP address: $(hostname -I)"
+          EOF
+
+      - name: Copy RoomBookingServer to Droplet
+        run: |
+          rsync -avz --exclude='.git' \
+                     --exclude='venv' \
+                     --exclude='__pycache__' \
+                     --exclude='.env' \
+                     -e "ssh -i ~/.ssh/id_ed25519" \
+                     ${{ github.workspace }}/sprint_4/RoomBookingServer deploy@${{ secrets.DROPLET_IP_ADDRESS }}:/home/deploy/
+
+      - name: Deploy to DIGITAL OCEAN
+        run: |
+          ssh -i ~/.ssh/id_ed25519 deploy@${{ secrets.DROPLET_IP_ADDRESS }} << 'EOF'
+            echo "Contents:"
+            ls -la
+
+            echo "Installing Python..."
+            sudo apt update -y
+            sudo apt install python3 python3-pip python3-venv -y
+
+            echo "Python version:"
+            python3 --version
+
+            echo "Project folder..."
+            cd RoomBookingServer
+
+            echo "Creating virtual environment..."
+            python3 -m venv .venv
+
+            echo "Activating virtual environment..."
+            source .venv/bin/activate
+
+            echo "Installing requirements..."
+            pip install -r requirements.txt
+
+            echo "Running migrations..."
+            python3 manage.py migrate
+            
+            echo "enabling port 8000..."
+            sudo ufw allow 8000
+            
+            echo "Start and enable Gunicorn"
+            sudo systemctl daemon-reload
+            sudo systemctl start gunicorn
+            sudo systemctl enable gunicorn  
+            sudo systemctl status gunicorn   
+          
+            echo "Done!"
+          EOF
+
   Sprint-2:
+    needs: Sprint-4-Deploy-Server
     runs-on: ubuntu-latest
 
     steps:
@@ -112,6 +209,7 @@ jobs:
           
 
   Sprint-3:
+    needs: Sprint-2
     runs-on: ubuntu-latest
 
     steps:
@@ -222,98 +320,3 @@ jobs:
           ls -la
           python -m pytest tests/*
 
-  Sprint-4-Deploy-Server:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        working-directory: sprint_4/RoomBookingServer
-        run: |
-          sudo apt-get update
-          python --version
-          echo "::group:: Install dependencies"
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          echo "::endgroup::"
-          pwd
-
-      - name: Debug env vars
-        run: |
-          echo "SSH KEY is set: ${{ secrets.DIGITAL_OCEAN_SSH_KEY != '' }}"
-          echo "IPADDRESS: ${{ secrets.DROPLET_IP_ADDRESS != '' }}"
-
-      - name: Setup SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DIGITAL_OCEAN_SSH_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H ${{ secrets.DROPLET_IP_ADDRESS }} >> ~/.ssh/known_hosts
-
-      - name: Connect to Digital Ocean Droplet
-        env:
-            PYTHONPATH: ${{ github.workspace }}/sprint_4/Room_booking_serve
-            DITIAL_OCEAN_SSH_KEY: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
-            DROPLET_IP: ${{ secrets.DROPLET_IP_ADDRESS }}
-        run: |
-          ssh -i ~/.ssh/id_ed25519 deploy@$DROPLET_IP << 'EOF'
-          echo "Running Server: $(pwd)"
-          echo "User: $(whoami)"
-          echo "Server IP address: $(hostname -I)"
-          EOF
-
-      - name: Copy RoomBookingServer to Droplet
-        run: |
-          rsync -avz --exclude='.git' \
-                     --exclude='venv' \
-                     --exclude='__pycache__' \
-                     --exclude='.env' \
-                     -e "ssh -i ~/.ssh/id_ed25519" \
-                     ${{ github.workspace }}/sprint_4/RoomBookingServer deploy@${{ secrets.DROPLET_IP_ADDRESS }}:/home/deploy/
-
-      - name: Deploy to DIGITAL OCEAN
-        run: |
-          ssh -i ~/.ssh/id_ed25519 deploy@${{ secrets.DROPLET_IP_ADDRESS }} << 'EOF'
-            echo "Contents:"
-            ls -la
-
-            echo "Installing Python..."
-            sudo apt update -y
-            sudo apt install python3 python3-pip python3-venv -y
-
-            echo "Python version:"
-            python3 --version
-
-            echo "Project folder..."
-            cd RoomBookingServer
-
-            echo "Creating virtual environment..."
-            python3 -m venv .venv
-
-            echo "Activating virtual environment..."
-            source .venv/bin/activate
-
-            echo "Installing requirements..."
-            pip install -r requirements.txt
-
-            echo "Running migrations..."
-            python3 manage.py migrate
-            
-            echo "enabling port 8000..."
-            sudo ufw allow 8000
-            
-            echo "Start and enable Gunicorn"
-            sudo systemctl daemon-reload
-            sudo systemctl start gunicorn
-            sudo systemctl enable gunicorn  
-            sudo systemctl status gunicorn   
-          
-            echo "Done!"
-          EOF
