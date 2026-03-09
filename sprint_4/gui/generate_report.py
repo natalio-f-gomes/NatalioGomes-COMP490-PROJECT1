@@ -22,14 +22,17 @@ class GenerateReport:
         header = ["User ID", "Email", "Username", "Date", "Action", "Room ID", "Reservation IDs Affected",
                   "Total Reservations Affected"]
         file_exists = os.path.exists("report.csv")
-        with open('Report/report.csv', 'a', newline='') as csvfile:
-            writer = csv.writer(csvfile)
-            if file_exists:
-                writer.writerows(self.all_reports)
-            else:
-                writer.writerow(header)
-                writer.writerows(self.all_reports)
-            self.all_reports = []
+        try:
+            with open('Report/report.csv', 'a', newline='', encoding="utf-8") as csvfile:
+                writer = csv.writer(csvfile)
+                if file_exists:
+                    writer.writerows(self.all_reports)
+                else:
+                    writer.writerow(header)
+                    writer.writerows(self.all_reports)
+                self.all_reports = []
+        except FileNotFoundError:
+            print("FILE NOT FOUND")
 
     @staticmethod
     def get_user_booking_data(bookings_with_the_room_id: list[tuple]) -> dict:
@@ -55,9 +58,11 @@ class GenerateReport:
         :param user_booking_data: dict
         :return: None
         """
+
         data = self.get_user_booking_data(bookings_with_the_room_id)
         print(f"DEBUG: Bookings with the room id {bookings_with_the_room_id}")
         room_id = bookings_with_the_room_id[0][5]
+        print(f"DEBUG: Room ID: {room_id}")
         for user_data in users_affected:
             print(user_data)
             user_id = user_data[0]

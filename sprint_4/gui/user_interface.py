@@ -269,7 +269,7 @@ class UserInterface:
         room_name_entry.grid(row=1, column=2,  padx=30, pady=(10, 15))
 
         room_capacity_lbl = customtkinter.CTkLabel(self.new_room_frame, text="Room Capacity",
-                                                  font=customtkinter.CTkFont(size=20, weight="bold"))
+                                            font=customtkinter.CTkFont(size=20, weight="bold"))
         room_capacity_lbl.grid(row=2, column=0, padx=30, pady=(10, 15))
         room_capacity_entry = customtkinter.CTkEntry(self.new_room_frame, width=200,
                                                      placeholder_text="Room Capacity")

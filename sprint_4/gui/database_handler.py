@@ -12,10 +12,13 @@ from generate_report import GenerateReport
 
 class DatabaseHandler:
     """Database Handler Class with all necessary methods for sprint_4"""
-    def __init__(self):
+    def __init__(self, connection=None):
         """Initialize the constructor by loading the db"""
-        self.database_path = 'db.sqlite3'
-        self.connection = sqlite3.connect(self.database_path)
+        if connection is not None:
+            self.connection = connection
+        else:
+            self.database_path = 'db.sqlite3'
+            self.connection = sqlite3.connect(self.database_path)
         self.cursor = self.connection.cursor()
         self.generate_report = GenerateReport()
 
@@ -55,7 +58,8 @@ class DatabaseHandler:
         self.cursor.execute(sql, (room_name, capacity, int(is_active)))
         self.connection.commit()
 
-    def call_report_generator(self, room_id):
+    def call_report_generator(self, room_id) -> None:
+        """Call the generate report function before deleting the booking room"""
         bookings_with_the_room_id = self.get_booking_by_room_id(room_id)
         user_ids = set(x[4] for x in bookings_with_the_room_id)
         user_booking_data = {}
