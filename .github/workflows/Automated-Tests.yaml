@@ -287,7 +287,7 @@ jobs:
           echo "SSH into droplet"
           ssh -i ~/.ssh/id_ed25519 deploy@$DROPLET_IP << 'EOF'
           echo "Contents: $(ls -la)"
-          echo "CD Room_booking_server : $(cd Room_booking_server)"
+          echo "CD RoomBookingServer : $(cd RoomBookingServer)"
           echo "::group:: Install Requirements: $(pip install -r requirements.txt) ::endgroup::"
           echo "Starting Server $(python3 manage.py runserver)"
           EOF
