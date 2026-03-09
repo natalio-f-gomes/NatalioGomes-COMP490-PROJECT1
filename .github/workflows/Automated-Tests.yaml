@@ -181,7 +181,6 @@ jobs:
           python -m pytest tests/*
 
   Sprint-4:
-    needs: Sprint-3
     runs-on: ubuntu-latest
 
     steps:
