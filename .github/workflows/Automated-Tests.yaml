@@ -179,3 +179,48 @@ jobs:
           cd sprint_3
           ls -la
           python -m pytest tests/*
+
+  Sprint-4:
+    needs: Sprint-3
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        working-directory: sprint_4/gui
+        run: |
+          sudo apt-get update
+          python --version
+          echo "::group:: Install dependencies"
+          python -m pip install --upgrade pip
+          pip install pylint pytest
+          pip install -r requirements.txt
+          echo "::endgroup::"
+          pip install pylint-venv
+          pwd
+
+      - name: Lint with pylint
+        env:
+          PYTHONPATH: sprint_4/gui
+        run: |
+          pylint sprint_4/gui \
+            --init-hook="import pylint_venv; pylint_venv.inithook()" \
+            --max-line-length=120 \
+            --disable=W0613,W0621,R0902,C0301
+
+
+      - name: Run Unit Tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}/sprint_4/gui
+        run: |
+          pwd
+          cd sprint_4/gui
+          ls -la
+          python -m pytest tests/*
