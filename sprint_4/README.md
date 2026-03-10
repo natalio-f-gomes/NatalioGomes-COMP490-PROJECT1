@@ -59,14 +59,14 @@ When you delete a room through the GUI, a report is automatically appended to `g
 1. Created a DigitalOcean droplet (Ubuntu)
 2. Generate an SSH key locally
    ```bash
-   ssh-keygen -t ed25519 -C "yourname@student.bridgew.edu"
+   ssh-keygen -t ed25519 -C "studentname@student.bridgew.edu"
    ```
 3. Add the public key when creating the droplet or via DigitalOcean dashboard
 4. SSH into the droplet
    ```bash
    ssh root@droplet-public-ipv4
    ```
-5. Create a non-root user
+5. Create a non-root user 
    ```bash
    adduser deploy
    usermod -aG sudo deploy
