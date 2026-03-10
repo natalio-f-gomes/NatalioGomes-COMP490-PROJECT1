@@ -14,3 +14,7 @@
 ### Sprint 3: Integration of AI
     cd sprint_3
     Follow the readme instructions
+
+### Sprint 4: GUI application and Server to be deployed
+    cd sprint_4
+    Follow the readme instructions
