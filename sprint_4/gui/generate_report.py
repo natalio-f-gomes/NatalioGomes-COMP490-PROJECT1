@@ -23,9 +23,13 @@ class GenerateReport:
                   "Total Reservations Affected"]
 
         try:
-            file_path = "Report/report.csv"
+
+            file_path = "Report"
+            file_name = "report.csv"
+            os.makedirs(file_path, exist_ok=True)
+            full_file_path = os.path.join(file_path, file_name)
             file_exists = os.path.isfile(file_path) and os.path.getsize(file_path) > 0
-            with open(file_path, 'a', newline='', encoding="utf-8") as csvfile:
+            with open(full_file_path, 'a', newline='', encoding="utf-8") as csvfile:
                 writer = csv.writer(csvfile)
                 if file_exists:
                     writer.writerows(self.all_reports)
@@ -33,8 +37,8 @@ class GenerateReport:
                     writer.writerow(header)
                     writer.writerows(self.all_reports)
                 self.all_reports = []
-        except FileNotFoundError:
-            print("FILE NOT FOUND")
+        except Exception as e:
+            print(e)
 
 
     @staticmethod
@@ -60,6 +64,9 @@ class GenerateReport:
         :param user_booking_data: dict
         :return: None
         """
+        if len(users_affected) == 0:
+            print("No users affected by deleting this room")
+            return
         date_of_action = datetime.now()
         data = self.get_user_booking_data(bookings_with_the_room_id)
         print(f"DEBUG: Bookings with the room id {bookings_with_the_room_id}")
