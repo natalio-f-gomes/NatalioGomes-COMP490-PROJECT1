@@ -35,15 +35,15 @@ class TestRoomBooking:
         room_booking_instance.authenticate()
         available_rooms_from_api = room_booking_instance.get_available_meeting_rooms()
         available_rooms = [
-            {'id': 1, 'room_name': 'Room A', 'capacity': 4},
-            {'id': 2, 'room_name': 'Room B', 'capacity': 10},
-            {'id': 3, 'room_name': 'Room C', 'capacity': 3},
-            {'id': 4, 'room_name': 'DMF 473', 'capacity': 12},
-            {'id': 5, 'room_name': 'DMF 471', 'capacity': 12},
-            {'id': 6, 'room_name': 'DMF 363', 'capacity': 24},
-            {'id': 7, 'room_name': 'DMF Small Office', 'capacity': 4},
-            {'id': 8, 'room_name': 'Welcome Center 206', 'capacity': 15},
-            {'id': 9, 'room_name': 'Welcome Center 210', 'capacity': 20}
+            {'id': 1, 'room_name': 'Room A', 'capacity': 4, 'is_active': True},
+            {'id': 2, 'room_name': 'Room B', 'capacity': 10, 'is_active': True},
+            {'id': 3, 'room_name': 'Room C', 'capacity': 3, 'is_active': True},
+            {'id': 4, 'room_name': 'DMF 473', 'capacity': 12, 'is_active': True},
+            {'id': 5, 'room_name': 'DMF 471', 'capacity': 12, 'is_active': True},
+            {'id': 6, 'room_name': 'DMF 363', 'capacity': 24, 'is_active': True},
+            {'id': 7, 'room_name': 'DMF Small Office', 'capacity': 4, 'is_active': True},
+            {'id': 8, 'room_name': 'Welcome Center 206', 'capacity': 15, 'is_active': True},
+            {'id': 9, 'room_name': 'Welcome Center 210', 'capacity': 20, 'is_active': True}
         ]
 
         for api_room, available_room in zip(available_rooms_from_api, available_rooms):
