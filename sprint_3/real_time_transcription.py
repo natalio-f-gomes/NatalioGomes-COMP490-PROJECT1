@@ -112,6 +112,7 @@ class RealTimeTranscription:
         user_prompt = user_prompt.get("text", "")
         if user_prompt:
             print(f"User Prompt:\t{user_prompt}")
+            print("...Executing your query...")
             self.all_transcriptions.append(user_prompt)
             self.user_prompt_lst.append(user_prompt)
 

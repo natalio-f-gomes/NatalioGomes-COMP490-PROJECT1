@@ -137,6 +137,7 @@ class FilterLogic:
         if "list_all_bookings" in data:
             print("RESULT: ")
             print(f"{'=' * 200}")
+            print(f"You have {len(self.all_my_bookings)} Bookings")
             for i in self.all_my_bookings:
                 print(i)
             print(f"{'=' * 200}")
