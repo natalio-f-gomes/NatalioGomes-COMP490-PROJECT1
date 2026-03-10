@@ -37,7 +37,7 @@ class GenerateReport:
                     writer.writerow(header)
                     writer.writerows(self.all_reports)
                 self.all_reports = []
-        except Exception as e:
+        except FileNotFound as e:
             print(e)
 
 
