@@ -82,8 +82,8 @@ When you delete a room through the GUI, a report is automatically appended to `g
    sudo apt install python3-venv python3-pip
    ```
 8. Added the droplet public IP address in the allowed hosts in the RoomBookingServer
-
-9. Create systemd service
+9. I made sure to add the ssh key to GitHub repo secrets and then connected to Digital ocean droplet, and then I copied the Room Booking Server code to the droplet instance
+10. Create systemd service
     ```bash
     sudo nano /etc/systemd/system/gunicorn.service
     ```
@@ -107,7 +107,7 @@ When you delete a room through the GUI, a report is automatically appended to `g
     WantedBy=multi-user.target
     ```
    
-10. Enable and start the service
+11. Enable and start the service
     ```bash
     sudo systemctl daemon-reload
     sudo systemctl start gunicorn
