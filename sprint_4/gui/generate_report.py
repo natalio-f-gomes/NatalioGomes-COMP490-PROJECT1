@@ -82,6 +82,6 @@ class GenerateReport:
                 reservation_ids.append(i[0])
             print(f"DEBUG: User ID: {user_id} Username: {username} User_email: {user_email} action_type:"
                   f" {action_type} Reservation_ids: {reservation_ids} Reservations Canceled: {data[user_id]}")
-            report_data = (user_id, user_email, username,date_of_action,  action_type, room_id, reservation_ids, data[user_id])
+            report_data = (user_id, user_email, username,date_of_action,  action_type, room_id, reservation_ids, len(reservation_ids))
             self.all_reports.append(report_data)
         self.write_report_to_csv()
