@@ -38,7 +38,7 @@ python manage.py createsuperuser
 # make sure to create the super user with the credentials provided by the professor
 
 # 5. Run development server
-python manage.py runserver 0.0.0.0:8000
+python manage.py runserver
 ```
 
 > **Note:** Follow the original repository's README inside `RoomBookingServer/` for any project-specific setup steps
@@ -54,7 +54,7 @@ python3 main.py # python main.py on windows
 
 When you delete a room through the GUI, a report is automatically appended to `gui/Report/report.csv`.
 
-## Deployment to DigitalOcean Droplet
+## How I deployed the code to digital ocean
 
 1. Created a DigitalOcean droplet (Ubuntu)
 2. Generate an SSH key locally
@@ -81,9 +81,9 @@ When you delete a room through the GUI, a report is automatically appended to `g
    sudo apt update
    sudo apt install python3-venv python3-pip
    ```
-7-1. Added the droplet public IP address in the allowed hosts in the RoomBookingServer
+8. Added the droplet public IP address in the allowed hosts in the RoomBookingServer
 
-8. Create systemd service
+9. Create systemd service
     ```bash
     sudo nano /etc/systemd/system/gunicorn.service
     ```
@@ -106,7 +106,8 @@ When you delete a room through the GUI, a report is automatically appended to `g
     [Install]
     WantedBy=multi-user.target
     ```
-9. Enable and start the service
+   
+10. Enable and start the service
     ```bash
     sudo systemctl daemon-reload
     sudo systemctl start gunicorn
