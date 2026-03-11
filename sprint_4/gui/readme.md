@@ -48,7 +48,7 @@ python3 main.py # macOS
 python main.py  # windows
 ```
 
-Notes: Evrytime the user deletes a room, it writes the report located in Report/report.csv
+Notes: Evrytime the user deletes a room, it writes the report located in **Report/report.csv**
 
 8. Running Tests
 
@@ -182,7 +182,6 @@ All tests use an **in-memory SQLite database** created using a pytest fixture:
 * **Description:**
   Validates that room information can be updated correctly.
 * **Process:**
-
   * Insert sample rooms.
   * Update room with ID `1`.
   * Retrieve the updated room.
@@ -195,9 +194,9 @@ All tests use an **in-memory SQLite database** created using a pytest fixture:
 * **Function Tested:** `delete_room_by_id(room_id)`
 * **Test Function:** `test_delete_room_by_id`
 * **Description:**
-  Confirms that a meeting room can be removed from the database.
+  Removes the meeting room from the db
 * **Process:**
-
+  
   * Insert rooms, booking history, and users.
   * Delete a room using its ID.
   * Verify the number of rooms in the database decreases.
