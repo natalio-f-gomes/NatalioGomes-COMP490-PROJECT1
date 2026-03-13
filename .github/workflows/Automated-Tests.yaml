@@ -118,41 +118,26 @@ jobs:
       - name: Deploy to DIGITAL OCEAN
         run: |
           ssh -i ~/.ssh/id_ed25519 deploy@${{ secrets.DROPLET_IP_ADDRESS }} << 'EOF'
-            set -e  # Stop on first error
-      
-            echo "Contents:"
-            ls -la
-      
-            echo "Project folder..."
+            set -e
+
             cd /home/deploy/RoomBookingServer
-      
-            echo "Creating virtual environment..."
-            python3 -m venv .venv
-      
+
             echo "Activating virtual environment..."
             source .venv/bin/activate
-      
+
             echo "Installing requirements..."
             pip install --upgrade pip
             pip install -r requirements.txt
-      
+
             echo "Running migrations..."
             python3 manage.py migrate
-      
-            echo "Enabling port 8000..."
-            sudo ufw allow 8000
-      
-            echo "Stopping Gunicorn and freeing port..."
-            sudo systemctl stop gunicorn || true
-            sudo fuser -k 8000/tcp || true
-            sleep 2
-      
-            echo "Start and enable Gunicorn"
+
+            echo "Restarting Gunicorn..."
             sudo systemctl daemon-reload
             sudo systemctl restart gunicorn
             sudo systemctl enable gunicorn
-            sudo systemctl status gunicorn
-      
+            sudo systemctl status gunicorn --no-pager
+
             echo "Done!"
           EOF
 
