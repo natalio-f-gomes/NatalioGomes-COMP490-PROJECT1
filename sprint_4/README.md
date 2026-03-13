@@ -134,7 +134,6 @@ python3 manage.py createsuperuser
 Make sure your Django `settings.py` has the following configured:
  
 ```python
-DEBUG = False
 ALLOWED_HOSTS = ['droplet_ip']
 ```
  
