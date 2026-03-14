@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Committing new changes"
 USER_NAME="natalio-f-gomes"
-USER_EMAIL="natalio.f.gomes@gmail.com"
+USER_EMAIL="natalio.f.gomes@proton.me"
 
 # Get current git config values
 current_name=$(git config --global user.name)
