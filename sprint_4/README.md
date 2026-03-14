@@ -253,7 +253,7 @@ Below is the deploy job for `.github/workflows/main.yml`.
 
       - name: Connect to Digital Ocean Droplet
         env:
-            PYTHONPATH: ${{ github.workspace }}/sprint_4/Room_booking_serve
+            PYTHONPATH: ${{ github.workspace }}/sprint_4/RoomBookingServer
             DITIAL_OCEAN_SSH_KEY: ${{ secrets.DIGITAL_OCEAN_SSH_KEY }}
             DROPLET_IP: ${{ secrets.DROPLET_IP_ADDRESS }}
         run: |
