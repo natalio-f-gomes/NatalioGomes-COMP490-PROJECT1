@@ -9,7 +9,6 @@
 
 
 ## Prerequisites
-
 - Git
 - Python 3.11
 - pyenv

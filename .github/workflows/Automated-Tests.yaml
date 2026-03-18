@@ -66,22 +66,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        working-directory: sprint_4/RoomBookingServer
-        run: |
-          sudo apt-get update
-          python --version
-          echo "::group:: Install dependencies"
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          echo "::endgroup::"
-          pwd
-
       - name: Debug env vars
         run: |
           echo "SSH KEY is set: ${{ secrets.DIGITAL_OCEAN_SSH_KEY != '' }}"
